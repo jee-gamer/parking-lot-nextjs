@@ -1,5 +1,5 @@
 import Vehicle from "../models/Vehicle";
-import ParkingSpot from ".."
+import ParkingSpot from "@/models/ParkingSpot"
 import { VehicleSize } from "@/models/VehicleSize";
 import mongoose from "mongoose";
 

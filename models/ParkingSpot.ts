@@ -1,5 +1,6 @@
 import Vehicle from "@/models/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
+import Level from "../models/Level";
 
 export default class ParkingSpot {
     private vehicle: Vehicle;
@@ -31,4 +32,26 @@ export default class ParkingSpot {
         this.vehicle.parkInSpot(this);
         return true;
     }
+
+    public getRow() {
+        return this.row;
+    }
+
+    public getSize() {
+        return this.spotSize;
+    }
+
+    public print() {
+        if (this.vehicle == null) {
+            if (this.spotSize == VehicleSize.Compact) {
+                console.log("c");
+            } else if (this.spotSize == VehicleSize.Large) {
+                console.log('l');
+            } else if (this.spotSize == VehicleSize.Motorcycle) {
+                console.log('m');
+            }
+        } else {
+            this.vehicle.print()
+        }
+     }
 }
