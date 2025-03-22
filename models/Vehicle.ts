@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { VehicleSize } from "@/models/VehicleSize"
-import ParkingSpot from "";
+import ParkingSpot from "@/models/ParkingSpot";
 
 export default abstract class Vehicle {
     parkingSpots: Array<ParkingSpot> = new Array<ParkingSpot>();
@@ -8,7 +8,7 @@ export default abstract class Vehicle {
     spotsNeeded: number;
     size: VehicleSize;
 
-    constructor() {
+    protected constructor() {
         this.parkingSpots = [];
     }
 
@@ -21,12 +21,12 @@ export default abstract class Vehicle {
     }
 
     parkInSpot(parkingSpot: ParkingSpot) {
-        this.parkingSpots.push(ParkingSpot);
+        this.parkingSpots.push(parkingSpot);
     }
 
     clearSpots() {
         for (let i = 0; i <= this.parkingSpots.length; i++) {
-            this.parkingSpots.get(i).removeVehicle();
+            this.parkingSpots[i].removeVehicle();
         }
         this.parkingSpots = []
     }

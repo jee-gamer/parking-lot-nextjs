@@ -21,7 +21,7 @@ export default class ParkingSpot {
     }
 
     public canFitVehicle(vehicle: Vehicle): boolean {
-        return this.isAvailable() && this.vehicle.canFitInSpots(this);
+        return this.isAvailable() && vehicle.canFitInSpots(this);
     }
 
     public park(v: Vehicle): boolean {
@@ -39,6 +39,10 @@ export default class ParkingSpot {
 
     public getSize() {
         return this.spotSize;
+    }
+
+    public removeVehicle() {
+        this.vehicle = null;
     }
 
     public print() {
