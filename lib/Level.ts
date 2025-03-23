@@ -57,7 +57,7 @@ export default class Level {
         return success;
     }
 
-    private findAvailableSpots(vehicle: Vehicle) {
+    private findAvailableSpots(vehicle: Vehicle): number {
         let spotsNeeded: number = vehicle.getSpotsNeeded();
         let lastRow: number = -1;
         let spotsFound: number = 0;
@@ -77,6 +77,7 @@ export default class Level {
                 return i - (spotsNeeded - 1);
             }
         }
+        return -1;
     }
 
     public print() {

@@ -1,8 +1,9 @@
-import dbConnect from './mongodb'
+import dbConnect from "@/lib/mongodb"
+import Vehicle from "@/lib/Vehicle";
 
 export default class DatabaseManager {
     private static instance: DatabaseManager;
-    private static connection; // I don't know what type this is
+    private static connection: any; // I don't know what type this is
 
     private constructor() {
         // do nothing
@@ -20,9 +21,5 @@ export default class DatabaseManager {
         if (!this.getConnection) {
             DatabaseManager.connection = await dbConnect();
         }
-    }
-
-    saveData() {
-
     }
 }
