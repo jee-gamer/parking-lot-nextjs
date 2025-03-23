@@ -2,7 +2,7 @@ import dbConnect from './mongodb'
 
 export default class DatabaseManager {
     private static instance: DatabaseManager;
-    private static connection;
+    private static connection; // I don't know what type this is
 
     private constructor() {
         // do nothing

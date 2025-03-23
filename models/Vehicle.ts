@@ -36,12 +36,20 @@ export default abstract class Vehicle {
 
 }
 
-const B = new mongoose.Schema({
-    name: {
+const vehicleSchema = new mongoose.Schema({
+    licensePlate: {
         type: String,
         required: true,
     },
-    description: String,
+    spotsNeeded: {
+        type: Number,
+        required: true,
+    },
+    size: {
+        type: VehicleSize,
+        required: true,
+    },
+    parked: Boolean,
 });
 
 // export default mongoose.models.Item || mongoose.model('Item', ItemSchema);
