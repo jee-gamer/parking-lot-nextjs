@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "esnext",  // or higher, like "ES2020"
-    "module": "esnext",  // or "Node16", depending on your environment
+    "target": "esnext", // or higher, like "ES2020"
+    "module": "esnext", // or "Node16", depending on your environment
     "moduleResolution": "Node",
     "jsx": "preserve",
     "esModuleInterop": true,
@@ -9,8 +9,26 @@
     "skipLibCheck": true,
     "allowJs": true,
     "paths": {
-      "@/*": ["./*"]
-    }
-  }
+      "@/*": [
+        "./*"
+      ]
+    },
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
-

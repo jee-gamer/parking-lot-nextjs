@@ -1,17 +1,47 @@
 import DatabaseManager from "@/lib/DatabaseManager";
-import Vehicle from "@/models/Vehicle"
+import VehicleModel from "@/models/Vehicle"
 import { NextApiRequest, NextApiResponse } from 'next';
+import Bus from "@/lib/Bus";
+import Car from "@/lib/Car";
+import Motorcycle from "@/lib/Motorcycle";
+import Vehicle from "@/lib/Vehicle"
+import { VehicleType } from "@/models/VehicleType";
+
+type VehicleClass = new (licensePlate: string) => Vehicle;
+
+const VehicleClassMap: Record<VehicleType, VehicleClass> = {
+    [VehicleType.Bus]: Bus,
+    [VehicleType.Car]: Car,
+    [VehicleType.Motorcycle]: Motorcycle,
+};
 
 const DB = DatabaseManager.getInstance();
 
 const createVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { licensePlate, spotsNeeded, size } = req.body;
+    const { licensePlate, vehicleType} = req.body;
 
     try {
         await DB.getConnection();
 
-        const vehicle = new Vehicle({ licensePlate, spotsNeeded, size }); // create a mongoose model
-        await vehicle.save();
+        const vehicleData = await VehicleModel.findOne({ licensePlate }).lean();
+        if (vehicleData) {
+            res.status(409).json({vehicleData, message: "Vehicle already exists"});
+        }
+
+        const vehicleClass = VehicleClassMap[vehicleType as VehicleType];
+        const vehicle = new vehicleClass(licensePlate);
+        const spotsNeeded = vehicle.getSpotsNeeded()
+        const size = vehicle.getSize();
+
+        const vehicleModel = new VehicleModel({
+            licensePlate: licensePlate,
+            vehicleType: vehicleType,
+            spotsNeeded: spotsNeeded,
+            size: size
+        });
+        // create a mongoose model
+
+        await vehicleModel.save();
         res.status(201).json(vehicle);
 
     } catch (error) {
@@ -21,9 +51,9 @@ const createVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 
-const getVehicles = async (req: NextApiRequest, res: NextApiResponse) => {
+const getVehicles = async (_req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const vehicles = await Vehicle.find(); // return all vehicle
+        const vehicles = await VehicleModel.find(); // return all vehicle
         res.status(200).json(vehicles);
     } catch (error) {
         console.error(error);

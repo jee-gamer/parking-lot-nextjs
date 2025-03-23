@@ -3,11 +3,11 @@ import {VehicleSize} from "@/models/VehicleSize";
 import Level from "./Level";
 
 export default class ParkingSpot {
-    private vehicle: Vehicle;
-    private spotSize: VehicleSize;
-    private row: number;
-    private spotNumber: number;
-    private level: Level;
+        private vehicle: Vehicle | null = null;
+        private spotSize: VehicleSize;
+        private row: number;
+        private spotNumber: number;
+        private level: Level;
 
     constructor(lvl: Level, r: number, n: number, sz: VehicleSize) {
         this.level = lvl;

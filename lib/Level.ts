@@ -50,10 +50,10 @@ export default class Level {
     private parkStartingAtSpot(spotNumber: number, vehicle: Vehicle) {
         vehicle.clearSpots();
         let success: boolean = true;
-        for (let i = spotNumber; i < spotNumber + vehicle.spotsNeeded; i++) {
+        for (let i = spotNumber; i < spotNumber + vehicle.getSpotsNeeded(); i++) {
             success &&= this.spots[i].park(vehicle);
         }
-        this.availableSpotsLocal -= vehicle.spotsNeeded;
+        this.availableSpotsLocal -= vehicle.getSpotsNeeded();
         return success;
     }
 

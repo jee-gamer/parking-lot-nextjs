@@ -1,5 +1,4 @@
 import dbConnect from "@/lib/mongodb"
-import Vehicle from "@/lib/Vehicle";
 
 export default class DatabaseManager {
     private static instance: DatabaseManager;

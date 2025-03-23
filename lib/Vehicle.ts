@@ -3,9 +3,9 @@ import ParkingSpot from "@/lib/ParkingSpot";
 
 export default abstract class Vehicle {
     parkingSpots: Array<ParkingSpot> = new Array<ParkingSpot>();
-    licensePlate: string;
-    spotsNeeded: number;
-    size: VehicleSize;
+    protected licensePlate: string;
+    protected spotsNeeded: number;
+    protected size: VehicleSize;
 
     protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize) {
         this.parkingSpots = [];

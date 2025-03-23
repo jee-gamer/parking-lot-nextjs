@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { VehicleSize } from "@/models/VehicleSize"
-// import ParkingSpot from "@/models/ParkingSpot";
+import { VehicleType } from "@/models/VehicleType";
 
 const vehicleSchema = new mongoose.Schema({
     licensePlate: {
@@ -9,6 +9,7 @@ const vehicleSchema = new mongoose.Schema({
     },
     vehicleType: {
         type: String,
+        enum: Object.values(VehicleType),
         required: true,
     },
     spotsNeeded: {
