@@ -1,15 +1,13 @@
-import Vehicle from "../models/Vehicle";
-import ParkingSpot from "@/models/ParkingSpot"
+import Vehicle from "../lib/Vehicle";
+import ParkingSpot from "@/lib/ParkingSpot"
 import { VehicleSize } from "@/models/VehicleSize";
-import mongoose from "mongoose";
 
 export default class Bus extends Vehicle {
-    spotsNeeded = 5
-    size = VehicleSize.Large
 
     constructor(licensePlate: string) {
-        super();
-        this.licensePlate = licensePlate;
+        let SpotNeeded = 5
+        let size = VehicleSize.Large
+        super(licensePlate, SpotNeeded, size);
     }
 
     public canFitInSpots(spot: ParkingSpot): boolean {

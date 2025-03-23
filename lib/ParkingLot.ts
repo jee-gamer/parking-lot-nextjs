@@ -1,5 +1,5 @@
-import Level from "@/models/Level"
-import Vehicle from "@/models/Vehicle";
+import Level from "@/lib/Level"
+import Vehicle from "@/lib/Vehicle";
 
 export default class ParkingLot {
     private levels: Level[];
