@@ -61,12 +61,35 @@ const getVehicles = async (_req: NextApiRequest, res: NextApiResponse) => {
     }
 }
 
+const removeVehicles = async (req: NextApiRequest, res: NextApiResponse) => {
+    const { licensePlate } = req.body;
+
+    try {
+        await DB.getConnection();
+
+        const find = await VehicleModel.findOne({ licensePlate }).lean();
+        if (!find) {
+            console.error("Vehicle not found");
+            res.status(404).json({message: "Vehicle not found"});
+        }
+        await VehicleModel.deleteOne({ licensePlate }).lean();
+        res.status(200).json({message: "Vehicle deleted successfully"})
+
+    } catch (error) {
+        console.error("Error deleting vehicle:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "POST") {
         await createVehicle(req, res);
     } else if (req.method === "GET") {
         await getVehicles(req, res);
-    } else {
+    } else if (req.method === "DELETE") {
+        await removeVehicles(req, res);
+    }
+    else {
         console.error("Method Not Allowed");
         res.status(405).json({ message: "Method Not Allowed" });
     }
