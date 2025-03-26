@@ -17,8 +17,9 @@ export default class DatabaseManager {
     }
 
     async getConnection() {
-        if (!this.getConnection) {
+        if (!DatabaseManager.connection) {
             DatabaseManager.connection = await dbConnect();
         }
+        return DatabaseManager.connection;
     }
 }

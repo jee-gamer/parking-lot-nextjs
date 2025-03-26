@@ -1,9 +1,11 @@
 // pages/api/items.js
-import dbConnect from '../../lib/mongodb';
 import Item from '../../models/Item';
 
+import DatabaseManager from '@/lib/DatabaseManager';
+const DB = DatabaseManager.getInstance();
+
 export default async function handler(req, res) {
-    await dbConnect();
+    await DB.getConnection()
 
     const { method } = req;
 
