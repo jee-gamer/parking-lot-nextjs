@@ -1,6 +1,12 @@
 import Vehicle from "@/lib/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
 import Level from "./Level";
+import DatabaseManager from "@/lib/DatabaseManager"
+import VehicleModel from "@/models/Vehicle";
+import {VehicleType} from "@/models/VehicleType";
+import { ParkingSpotModel } from "@/models/ParkingSpot";
+
+const DB = DatabaseManager.getInstance();
 
 export default class ParkingSpot {
         private vehicle: Vehicle | null = null;
@@ -8,8 +14,10 @@ export default class ParkingSpot {
         private row: number;
         private spotNumber: number;
         private level: Level;
+        private thismodel: number // maybe put model here
 
     constructor(lvl: Level, r: number, n: number, sz: VehicleSize) {
+            // maybe change the arguments to model so you can create class from model you get from
         this.level = lvl;
         this.row = r;
         this.spotNumber = n;
@@ -32,6 +40,26 @@ export default class ParkingSpot {
         this.vehicle.parkInSpot(this);
 
 
+        // SAVE TO MODEL
+        const parkingSpot = await ParkingSpotModel.findOne({ licensePlate }).lean();
+        if (vehicleData) {
+            res.status(409).json({vehicleData, message: "Vehicle already exists"});
+        }
+
+        const vehicleClass = VehicleClassMap[vehicleType as VehicleType];
+        const vehicle = new vehicleClass(licensePlate);
+        const spotsNeeded = vehicle.getSpotsNeeded()
+        const size = vehicle.getSize();
+
+        const vehicleModel = new VehicleModel({
+            licensePlate: licensePlate,
+            vehicleType: vehicleType,
+            spotsNeeded: spotsNeeded,
+            size: size
+        });
+        // create a mongoose model
+
+        await vehicleModel.save();
 
         return true;
     }

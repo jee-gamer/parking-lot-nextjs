@@ -33,4 +33,4 @@ const parkingSpotSchema = new mongoose.Schema<IParkingSpot>({
 });
 
 export default parkingSpotSchema
-export const parkingSpotModel = mongoose.models.ParkingSpot || mongoose.model("ParkingSpot", parkingSpotSchema);
+export const ParkingSpotModel = mongoose.models.ParkingSpot || mongoose.model("ParkingSpot", parkingSpotSchema);
