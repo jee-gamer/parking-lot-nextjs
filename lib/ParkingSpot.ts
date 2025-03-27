@@ -33,12 +33,12 @@ export default class ParkingSpot {
         this.vehicle = v;
         this.vehicle.parkInSpot(this); // may need to be removed?
 
-        const response = await axios.post(`${process.env.API_BASE_URL}/vehicleMethod`, { this: ParkingSpot });
-        if (response.status !== 200) {
-            // can't park for some reason
-            console.error(response);
-            return false;
-        }
+        // const response = await axios.post(`${process.env.API_BASE_URL}/vehicleMethod`, { this: ParkingSpot });
+        // if (response.status !== 200) {
+        //     // can't park for some reason
+        //     console.error(response);
+        //     return false;
+        // }
 
         return true;
     }

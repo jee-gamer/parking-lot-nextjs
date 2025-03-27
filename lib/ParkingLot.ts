@@ -7,9 +7,6 @@ export default class ParkingLot {
 
     constructor() {
         this.levels = Array.from({ length: this.NUM_LEVELS }, (_, i) => new Level(i, 10)); // 10 spots per level for now
-        for (let i=0; i<this.NUM_LEVELS; i++) {
-            this.levels[i] = new Level(i, 30); // each level have 30 parkingSpot
-        }
     }
 
     public parkVehicle(vehicle: Vehicle) {

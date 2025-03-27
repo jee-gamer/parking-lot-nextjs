@@ -2,13 +2,13 @@ import { VehicleSize } from "@/models/VehicleSize"
 import ParkingSpot from "@/lib/ParkingSpot";
 
 export default abstract class Vehicle {
-    parkingSpots: Array<ParkingSpot> = new Array<ParkingSpot>();
+    parkingSpots: Array<ParkingSpot>;
     protected licensePlate: string;
     protected spotsNeeded: number;
     protected size: VehicleSize;
 
     protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize) {
-        this.parkingSpots = [];
+        this.parkingSpots = new Array<ParkingSpot>();
         this.licensePlate = licensePlate;
         this.spotsNeeded = spotsNeeded;
         this.size = vehicleSize;
@@ -27,7 +27,9 @@ export default abstract class Vehicle {
     }
 
     clearSpots() {
-        for (let i = 0; i <= this.parkingSpots.length; i++) {
+        console.log(this.parkingSpots.length);
+
+        for (let i = 0; i < this.parkingSpots.length; i++) {
             this.parkingSpots[i].removeVehicle();
         }
         this.parkingSpots = []
