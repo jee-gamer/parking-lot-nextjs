@@ -27,8 +27,6 @@ export default abstract class Vehicle {
     }
 
     clearSpots() {
-        console.log(this.parkingSpots.length);
-
         for (let i = 0; i < this.parkingSpots.length; i++) {
             this.parkingSpots[i].removeVehicle();
         }

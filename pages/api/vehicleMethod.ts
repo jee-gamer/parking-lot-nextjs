@@ -19,28 +19,6 @@ const VehicleClassMap: Record<VehicleType, VehicleClass> = {
 
 const DB = DatabaseManager.getInstance();
 
-const saveSpot = async (req: NextApiRequest, res: NextApiResponse) => {
-    // Called from ParkingSpots
-    const { parkingSpot } = req.body;
-
-    try {
-        await DB.getConnection()
-
-        const spotNumber = parkingSpot.spotNumber;
-        const parkingSpotDB = await parkingSpotModel.findOne({spotNumber});
-
-        if (!parkingSpotDB) {
-            res.status(404).json({message: "ParkingSpot not found"});
-        }
-
-        parkingSpotDB.vehicle = parkingSpot.vehicle;
-        parkingSpotDB.save();
-
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({error});
-    }
-}
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "POST") {

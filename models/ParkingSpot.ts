@@ -2,22 +2,30 @@ import mongoose from "mongoose";
 import {VehicleSize} from "@/models/VehicleSize";
 // import Level from "@/lib/Level";
 import Vehicle from "@/lib/Vehicle";
+import Level from "@/lib/Level"
 
-const parkingSpotSchema = new mongoose.Schema({
-    spotNumber: {
-        type: Number,
-        required: true,
+interface IParkingSpot {
+    vehicle: Vehicle;
+    spotSize: VehicleSize;
+    row: number;
+    spotNumber: number;
+}
+
+const parkingSpotSchema = new mongoose.Schema<IParkingSpot>({
+    vehicle: {
+        type: Vehicle,
+        default: null,
     },
     spotSize: {
         type: String,
         enum: Object.values(VehicleSize),
         required: true,
     },
-    vehicle: {
-        type: Vehicle,
-        default: null,
-    },
     row: {
+        type: Number,
+        required: true,
+    },
+    spotNumber: {
         type: Number,
         required: true,
     }

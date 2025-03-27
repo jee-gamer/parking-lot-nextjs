@@ -1,7 +1,6 @@
 import Vehicle from "@/lib/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
 import Level from "./Level";
-import axios from 'axios';
 
 export default class ParkingSpot {
         private vehicle: Vehicle | null = null;
@@ -26,19 +25,13 @@ export default class ParkingSpot {
     }
 
     async park(v: Vehicle): Promise<boolean> {
-        // Call Api to park!
         if (!this.canFitVehicle(v)) {
             return false;
         }
         this.vehicle = v;
-        this.vehicle.parkInSpot(this); // may need to be removed?
+        this.vehicle.parkInSpot(this);
 
-        // const response = await axios.post(`${process.env.API_BASE_URL}/vehicleMethod`, { this: ParkingSpot });
-        // if (response.status !== 200) {
-        //     // can't park for some reason
-        //     console.error(response);
-        //     return false;
-        // }
+
 
         return true;
     }

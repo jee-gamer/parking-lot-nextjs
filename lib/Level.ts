@@ -5,7 +5,7 @@ import Vehicle from "@/lib/Vehicle";
 export default class Level {
     private floor: number;
     private spots: ParkingSpot[];
-    private availableSpotsLocal: number = 0; // number of free spots
+    private availableSpots: number = 0; // number of free spots
     private static readonly SPOTS_PER_ROW: number = 10;
 
     constructor(flr: number, numberSpots: number) {
@@ -30,15 +30,15 @@ export default class Level {
             this.spots[i] = new ParkingSpot(this, row, i, sz);
         }
 
-        this.availableSpotsLocal = numberSpots;
+        this.availableSpots = numberSpots;
     }
 
-    public availableSpots(): number {
-        return this.availableSpotsLocal;
+    public getAvailableSpots(): number {
+        return this.availableSpots;
     }
 
     public parkVehicle(vehicle: Vehicle) {
-        if (this.availableSpotsLocal < vehicle.getSpotsNeeded()) {
+        if (this.availableSpots < vehicle.getSpotsNeeded()) {
             return false;
         }
         let spotNumber: number =  this.findAvailableSpots(vehicle);
@@ -55,7 +55,7 @@ export default class Level {
         for (let i = spotNumber; i < spotNumber + vehicle.getSpotsNeeded(); i++) {
             success &&= this.spots[i].park(vehicle);
         }
-        this.availableSpotsLocal -= vehicle.getSpotsNeeded();
+        this.availableSpots -= vehicle.getSpotsNeeded();
         return success;
     }
 
@@ -97,6 +97,6 @@ export default class Level {
 
     public spotFreed() {
         // API
-        this.availableSpotsLocal++;
+        this.availableSpots++;
     }
 }
