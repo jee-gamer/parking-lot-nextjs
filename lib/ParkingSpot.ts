@@ -56,6 +56,7 @@ export default class ParkingSpot {
     }
 
     public removeVehicle() {
+        // API
         this.vehicle = null;
     }
 

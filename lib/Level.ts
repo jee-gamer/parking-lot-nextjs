@@ -9,6 +9,7 @@ export default class Level {
     private static readonly SPOTS_PER_ROW: number = 10;
 
     constructor(flr: number, numberSpots: number) {
+        // API
         this.floor = flr;
         this.spots = new Array(numberSpots);
 
@@ -48,6 +49,7 @@ export default class Level {
     }
 
     private parkStartingAtSpot(spotNumber: number, vehicle: Vehicle) {
+        // API
         vehicle.clearSpots();
         let success: boolean = true;
         for (let i = spotNumber; i < spotNumber + vehicle.getSpotsNeeded(); i++) {
@@ -58,6 +60,7 @@ export default class Level {
     }
 
     private findAvailableSpots(vehicle: Vehicle): number {
+        // API
         let spotsNeeded: number = vehicle.getSpotsNeeded();
         let lastRow: number = -1;
         let spotsFound: number = 0;
@@ -93,6 +96,7 @@ export default class Level {
     }
 
     public spotFreed() {
+        // API
         this.availableSpotsLocal++;
     }
 }
