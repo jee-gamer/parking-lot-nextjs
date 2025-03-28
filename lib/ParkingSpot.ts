@@ -14,10 +14,8 @@ export default class ParkingSpot {
         private row: number;
         private spotNumber: number;
         private level: Level;
-        private thismodel: number // maybe put model here
 
     constructor(lvl: Level, r: number, n: number, sz: VehicleSize) {
-            // maybe change the arguments to model so you can create class from model you get from
         this.level = lvl;
         this.row = r;
         this.spotNumber = n;

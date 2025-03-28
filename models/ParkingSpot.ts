@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import {VehicleSize} from "@/models/VehicleSize";
 // import Level from "@/lib/Level";
 import Vehicle from "@/lib/Vehicle";
 import Level from "@/lib/Level"
 
-interface IParkingSpot {
-    vehicle: Vehicle;
+interface IParkingSpot extends Document {
+    vehicle: moonge.Types.ObjectId;
     spotSize: VehicleSize;
     row: number;
     spotNumber: number;
@@ -13,7 +13,8 @@ interface IParkingSpot {
 
 const parkingSpotSchema = new mongoose.Schema<IParkingSpot>({
     vehicle: {
-        type: Vehicle,
+        type: Schema.Types.ObjectId,
+        ref: "Vehicle",
         default: null,
     },
     spotSize: {

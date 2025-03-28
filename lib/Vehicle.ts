@@ -8,8 +8,8 @@ export default abstract class Vehicle {
     protected size: VehicleSize;
 
     protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize) {
-        this.parkingSpots = new Array<ParkingSpot>();
         this.licensePlate = licensePlate;
+        this.parkingSpots = new Array<ParkingSpot>();
         this.spotsNeeded = spotsNeeded;
         this.size = vehicleSize;
     }
@@ -31,6 +31,17 @@ export default abstract class Vehicle {
             this.parkingSpots[i].removeVehicle();
         }
         this.parkingSpots = []
+    }
+
+    getAttribute() {
+        return {
+            licensePlate: this.licensePlate,
+            parkingSpots: this.parkingSpots,
+            spotsNeeded: this.spotsNeeded,
+            vehicleSize: this.size,
+            vehicleType: this.constructor.name,
+        }
+
     }
 
     abstract canFitInSpots(spot: ParkingSpot): boolean;

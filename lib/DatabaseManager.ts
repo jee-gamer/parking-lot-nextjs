@@ -28,6 +28,15 @@ export default class DatabaseManager {
     }
 
     async saveVehicle(vehicle: Vehicle) {
-        console.log(vehicle.name);
+        { licensePlate, parkingSpots}
+        const vehicleModel = new VehicleModel({
+            licensePlate: licensePlate,
+            vehicleType: vehicleType,
+            spotsNeeded: spotsNeeded,
+            size: size
+        });
+        // create a mongoose model
+
+        await vehicleModel.save();
     }
 }
