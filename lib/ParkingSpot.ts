@@ -34,8 +34,6 @@ export default class ParkingSpot {
         this.vehicle = v;
         this.vehicle.parkInSpot(this);
 
-        await DB.saveVehicle(this.vehicle);
-        await DB.saveParkingSpot(this);
         return true;
     }
 

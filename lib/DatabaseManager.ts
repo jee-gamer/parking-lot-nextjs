@@ -1,9 +1,11 @@
 import dbConnect from "@/lib/mongodb"
 import Vehicle from "@/lib/Vehicle";
 import ParkingSpot from "@/lib/ParkingSpot";
+import Level from "@/lib/Level";
+import ParkingLot from "@/lib/ParkingLot";
 
 import VehicleModel from "@/models/Vehicle";
-import { ParkingSpotModel } from "@/models/ParkingSpot";
+import ParkingLotModel from "@/models/ParkingLot";
 
 export default class DatabaseManager {
     private static instance: DatabaseManager;
@@ -53,26 +55,23 @@ export default class DatabaseManager {
         console.log("Vehicle updated");
     }
 
-    async saveParkingSpot(parkingSpot: ParkingSpot) {
-        const { vehicle, spotSize, row, spotNumber, level } = parkingSpot.getAttributes()
-        const existedParkingSpot = await ParkingSpotModel.findOne({ spotNumber: spotNumber, level: level });
+    async saveParkingLot(parkingLot: ParkingLot) {
+        const { levels, NUM_LEVELS } = parkingLot.getAttributes()
+        const existedParkingLot = await ParkingLotModel.findOne({ levels: levels, NUM_LEVELS });
 
-        if (!existedParkingSpot) {
-            const parkingSpotMdoel = new ParkingSpotModel({
-                vehicle: vehicle,
-                spotSize: spotSize,
-                row: row,
-                spotNumber: spotNumber,
-                level: level,
+        if (!existedParkingLot) {
+            const parkingLotModel = new ParkingLotModel({
+                levels: levels,
+                NUM_LEVELS: NUM_LEVELS,
             })
 
-            await parkingSpotMdoel.save();
-            console.log("ParkingSpot created")
+            await parkingLotModel.save();
+            console.log("ParkingLot created")
             return
         }
 
-        existedParkingSpot.vehicle = vehicle;
-        await existedParkingSpot.save();
-        console.log("ParkingSpot updated");
+        existedParkingLot.levels = levels;
+        await existedParkingLot.save();
+        console.log("ParkingLot updated");
     }
 }
