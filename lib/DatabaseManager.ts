@@ -28,15 +28,25 @@ export default class DatabaseManager {
     }
 
     async saveVehicle(vehicle: Vehicle) {
-        { licensePlate, parkingSpots}
-        const vehicleModel = new VehicleModel({
-            licensePlate: licensePlate,
-            vehicleType: vehicleType,
-            spotsNeeded: spotsNeeded,
-            size: size
-        });
-        // create a mongoose model
+        const { licensePlate, parkingSpots, spotsNeeded, size, vehicleType } = vehicle.getAttribute()
+        const existedVehicle = VehicleModel.findOne({ licensePlate })
 
-        await vehicleModel.save();
+        if (!existedVehicle) {
+            const vehicleModel = new VehicleModel({
+                licensePlate: licensePlate,
+                parkingSpots: parkingSpots,
+                spotsNeeded: spotsNeeded,
+                size: size,
+                vehicleType: vehicleType,
+            });
+
+            await vehicleModel.save();
+            console.log("Vehicle created");
+        }
+
+        // Vehicle already exists
+        existedVehicle.parkingSpots = parkingSpots;
+        await existedVehicle.save();
+        console.log("Vehicle updated");
     }
 }

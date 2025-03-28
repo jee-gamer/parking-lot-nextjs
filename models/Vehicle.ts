@@ -16,6 +16,7 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
     licensePlate: {
         type: String,
         required: true,
+        unique: true,
     },
     parkingSpots: [{
         type: Schema.Types.ObjectId,
