@@ -31,6 +31,7 @@ export default class ParkingSpot {
         await DB.getConnection()
 
         if (!this.canFitVehicle(v)) {
+            console.log(`Can't fit vehicle`)
             return false;
         }
         this.vehicleObject = v;

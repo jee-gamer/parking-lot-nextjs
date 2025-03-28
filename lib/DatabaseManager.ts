@@ -54,8 +54,8 @@ export default class DatabaseManager {
     }
 
     async saveParkingLot(parkingLot: ParkingLot) {
-        const { _id, levels, NUM_LEVELS } = parkingLot.getAttributes()
-        const existedParkingLot = await ParkingLotModel.findOne({ _id: _id });
+        const { id, levels, NUM_LEVELS } = parkingLot.getAttributes()
+        const existedParkingLot = await ParkingLotModel.findOne({ _id: id });
 
         if (!existedParkingLot) {
             const parkingLotModel = new ParkingLotModel({
@@ -64,6 +64,7 @@ export default class DatabaseManager {
             })
 
             await parkingLotModel.save();
+            parkingLot.id = parkingLotModel._id;
             console.log("ParkingLot created")
             return
         }

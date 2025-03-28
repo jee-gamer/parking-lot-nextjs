@@ -38,10 +38,12 @@ export default class Level {
 
     public parkVehicle(vehicle: Vehicle) {
         if (this.availableSpots < vehicle.getSpotsNeeded()) {
+            console.log("Not enough available spots")
             return false;
         }
         let spotNumber: number =  this.findAvailableSpots(vehicle);
         if (spotNumber < 0) {
+            console.log("Not enough available spots after check")
             return false;
         }
         return this.parkStartingAtSpot(spotNumber, vehicle);
@@ -56,6 +58,7 @@ export default class Level {
             success &&= result
         }
         this.availableSpots -= vehicle.getSpotsNeeded();
+        console.log(`${success} at parking at the spot`);
         return success;
     }
 

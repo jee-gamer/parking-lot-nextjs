@@ -6,13 +6,12 @@ import mongoose from "mongoose";
 const DB = DatabaseManager.getInstance()
 
 export default class ParkingLot {
-    private _id: mongoose.Types.ObjectId;
+    public id: mongoose.Types.ObjectId | null = null; // mirror from mongoose
     private levels: Level[];
     private NUM_LEVELS: number = 5;
 
     constructor() {
         this.levels = Array.from({ length: this.NUM_LEVELS }, (_, i) => new Level(i, 10)); // 10 spots per level for now
-        this._id = new mongoose.Types.ObjectId();
     }
 
     async parkVehicle(vehicle: Vehicle) {
@@ -30,7 +29,7 @@ export default class ParkingLot {
 
     public getAttributes() {
         return {
-            _id: this._id,
+            id: this.id,
             levels: this.levels, // Don't know if this is correct, levels can be modified then, but I dont know if making copies is viable
             NUM_LEVELS: this.NUM_LEVELS,
         }
