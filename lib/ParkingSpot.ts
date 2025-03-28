@@ -2,9 +2,6 @@ import Vehicle from "@/lib/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
 import Level from "./Level";
 import DatabaseManager from "@/lib/DatabaseManager"
-import VehicleModel from "@/models/Vehicle";
-import {VehicleType} from "@/models/VehicleType";
-import { ParkingSpotModel } from "@/models/ParkingSpot";
 
 const DB = DatabaseManager.getInstance();
 
@@ -37,10 +34,8 @@ export default class ParkingSpot {
         this.vehicle = v;
         this.vehicle.parkInSpot(this);
 
-
-        // SAVE TO MODEL
-        const parkingSpot = await ParkingSpotModel.findOne({ licensePlate }).lean();
-
+        await DB.saveVehicle(this.vehicle);
+        await DB.saveParkingSpot(this);
         return true;
     }
 
@@ -54,6 +49,16 @@ export default class ParkingSpot {
 
     public getSpotNumber() {
         return this.spotNumber;
+    }
+
+    public getAttributes() {
+        return {
+            vehicle: this.vehicle,
+            spotSize: this.spotSize,
+            row: this.row,
+            spotNumber: this.spotNumber,
+            level: this.level,
+        }
     }
 
     public removeVehicle() {

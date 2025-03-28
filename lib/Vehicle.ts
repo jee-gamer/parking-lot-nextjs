@@ -33,7 +33,7 @@ export default abstract class Vehicle {
         this.parkingSpots = []
     }
 
-    getAttribute() {
+    getAttributes() {
         return {
             licensePlate: this.licensePlate,
             parkingSpots: this.parkingSpots,
