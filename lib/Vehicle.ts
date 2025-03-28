@@ -22,6 +22,10 @@ export default abstract class Vehicle {
         return this.size;
     }
 
+    getLicensePlate() {
+        return this.licensePlate;
+    }
+
     parkInSpot(parkingSpot: ParkingSpot) {
         this.parkingSpots.push(parkingSpot);
     }

@@ -18,7 +18,7 @@ export default class ParkingLot {
 
                 await DB.getConnection()
                 await DB.saveParkingLot(this)
-
+                await DB.saveVehicle(vehicle)
                 return true;
             }
         }

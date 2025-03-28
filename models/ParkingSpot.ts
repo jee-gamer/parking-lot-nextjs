@@ -6,7 +6,6 @@ interface IParkingSpot extends Document {
     spotSize: VehicleSize;
     row: number;
     spotNumber: number;
-    level: mongoose.Types.ObjectId;
 }
 
 const parkingSpotSchema = new mongoose.Schema<IParkingSpot>({
@@ -28,12 +27,6 @@ const parkingSpotSchema = new mongoose.Schema<IParkingSpot>({
         type: Number,
         required: true,
     },
-    level: {
-        type: Schema.Types.ObjectId,
-        ref: "Level",
-        required: true,
-    }
 });
 
 export default parkingSpotSchema
-export const ParkingSpotModel = mongoose.models.ParkingSpot || mongoose.model("ParkingSpot", parkingSpotSchema);

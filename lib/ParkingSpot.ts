@@ -1,35 +1,44 @@
 import Vehicle from "@/lib/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
-import Level from "./Level";
+import mongoose from "mongoose";
+import DatabaseManager from "@/lib/DatabaseManager";
+import VehicleModel from '@/models/Vehicle';
+
+const DB = DatabaseManager.getInstance();
 
 export default class ParkingSpot {
-        private vehicle: Vehicle | null = null;
+        private vehicle: mongoose.Types.ObjectId | null = null; // mongo ID for vehicle
         private spotSize: VehicleSize;
         private row: number;
         private spotNumber: number;
-        private level: Level;
+        private vehicleObject: Vehicle | null = null;
 
-    constructor(lvl: Level, r: number, n: number, sz: VehicleSize) {
-        this.level = lvl;
+    constructor(r: number, n: number, sz: VehicleSize) {
         this.row = r;
         this.spotNumber = n;
         this.spotSize = sz;
     }
 
     public isAvailable(): boolean {
-        return this.vehicle == null;
+        return this.vehicleObject == null;
     }
 
     public canFitVehicle(vehicle: Vehicle): boolean {
         return this.isAvailable() && vehicle.canFitInSpots(this);
     }
 
-    public park(v: Vehicle): boolean {
+    async park(v: Vehicle): Promise<boolean> {
+        await DB.getConnection()
+
         if (!this.canFitVehicle(v)) {
             return false;
         }
-        this.vehicle = v;
-        this.vehicle.parkInSpot(this);
+        this.vehicleObject = v;
+        this.vehicleObject.parkInSpot(this);
+
+        const thisVehicle = await VehicleModel.findOne({ licensePlate: v.getLicensePlate()});
+        this.vehicle = thisVehicle._id
+        // Don't care about error case for now
 
         return true;
     }
@@ -48,21 +57,19 @@ export default class ParkingSpot {
 
     public getAttributes() {
         return {
-            vehicle: this.vehicle,
+            vehicle: this.vehicleObject,
             spotSize: this.spotSize,
             row: this.row,
             spotNumber: this.spotNumber,
-            level: this.level,
         }
     }
 
     public removeVehicle() {
-        // API
-        this.vehicle = null;
+        this.vehicleObject = null;
     }
 
     public print() {
-        if (this.vehicle == null) {
+        if (this.vehicleObject == null) {
             if (this.spotSize == VehicleSize.Compact) {
                 console.log("c");
             } else if (this.spotSize == VehicleSize.Large) {
@@ -71,7 +78,7 @@ export default class ParkingSpot {
                 console.log('m');
             }
         } else {
-            this.vehicle.print()
+            this.vehicleObject.print()
         }
      }
 }

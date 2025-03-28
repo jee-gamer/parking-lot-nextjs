@@ -9,7 +9,6 @@ export default class Level {
     private static readonly SPOTS_PER_ROW: number = 10;
 
     constructor(flr: number, numberSpots: number) {
-        // API
         this.floor = flr;
         this.spots = new Array(numberSpots);
 
@@ -27,7 +26,7 @@ export default class Level {
             }
 
             let row = Math.floor(i / Level.SPOTS_PER_ROW);
-            this.spots[i] = new ParkingSpot(this, row, i, sz);
+            this.spots[i] = new ParkingSpot(row, i, sz);
         }
 
         this.availableSpots = numberSpots;
@@ -48,12 +47,13 @@ export default class Level {
         return this.parkStartingAtSpot(spotNumber, vehicle);
     }
 
-    private parkStartingAtSpot(spotNumber: number, vehicle: Vehicle) {
+    async parkStartingAtSpot(spotNumber: number, vehicle: Vehicle) {
         // API
         vehicle.clearSpots();
         let success: boolean = true;
         for (let i = spotNumber; i < spotNumber + vehicle.getSpotsNeeded(); i++) {
-            success &&= this.spots[i].park(vehicle);
+            const result = await this.spots[i].park(vehicle);
+            success &&= result
         }
         this.availableSpots -= vehicle.getSpotsNeeded();
         return success;
