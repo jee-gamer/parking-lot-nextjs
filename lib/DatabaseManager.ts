@@ -29,7 +29,7 @@ export default class DatabaseManager {
 
     async saveVehicle(vehicle: Vehicle) {
         const { licensePlate, parkingSpots, spotsNeeded, size, vehicleType } = vehicle.getAttribute()
-        const existedVehicle = VehicleModel.findOne({ licensePlate })
+        const existedVehicle = await VehicleModel.findOne({ licensePlate })
 
         if (!existedVehicle) {
             const vehicleModel = new VehicleModel({
@@ -41,7 +41,8 @@ export default class DatabaseManager {
             });
 
             await vehicleModel.save();
-            console.log("Vehicle created");
+            console.log("Vehicle created")
+            return
         }
 
         // Vehicle already exists

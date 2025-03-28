@@ -1,6 +1,7 @@
 {
   "name": "nextjs-mongodb-crud",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -9,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/env": "^15.2.4",
     "axios": "^1.8.4",
     "mongoose": "^8.12.1",
     "next": "15.2.2",
@@ -23,5 +25,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
     "tailwindcss": "^4"
+  },
+  "_moduleAliases": {
+    "@": "./"
   }
 }

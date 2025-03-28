@@ -38,7 +38,7 @@ export default abstract class Vehicle {
             licensePlate: this.licensePlate,
             parkingSpots: this.parkingSpots,
             spotsNeeded: this.spotsNeeded,
-            vehicleSize: this.size,
+            size: this.size,
             vehicleType: this.constructor.name,
         }
 
