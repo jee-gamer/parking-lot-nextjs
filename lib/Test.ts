@@ -7,7 +7,7 @@ await DB.getConnection()
 
 const parkingLot = new ParkingLot()
 await DB.saveParkingLot(parkingLot)
-const bus = new Bus("3877")
+const bus = new Bus("5477")
 await DB.saveVehicle(bus)
 
 const status = await parkingLot.parkVehicle(bus)

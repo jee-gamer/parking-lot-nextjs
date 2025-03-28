@@ -1,7 +1,5 @@
 import dbConnect from "@/lib/mongodb"
 import Vehicle from "@/lib/Vehicle";
-import ParkingSpot from "@/lib/ParkingSpot";
-import Level from "@/lib/Level";
 import ParkingLot from "@/lib/ParkingLot";
 
 import VehicleModel from "@/models/Vehicle";
@@ -56,8 +54,8 @@ export default class DatabaseManager {
     }
 
     async saveParkingLot(parkingLot: ParkingLot) {
-        const { levels, NUM_LEVELS } = parkingLot.getAttributes()
-        const existedParkingLot = await ParkingLotModel.findOne({ levels: levels, NUM_LEVELS });
+        const { _id, levels, NUM_LEVELS } = parkingLot.getAttributes()
+        const existedParkingLot = await ParkingLotModel.findOne({ _id: _id });
 
         if (!existedParkingLot) {
             const parkingLotModel = new ParkingLotModel({

@@ -1,15 +1,17 @@
 import { VehicleSize } from "@/models/VehicleSize"
 import ParkingSpot from "@/lib/ParkingSpot";
+import mongoose from "mongoose";
 
 export default abstract class Vehicle {
-    parkingSpots: Array<ParkingSpot>;
+    parkingSpots: Array<mongoose.Types.ObjectId> | null = null // reference by Id
     protected licensePlate: string;
     protected spotsNeeded: number;
     protected size: VehicleSize;
+    protected parkingSpotsObject: ParkingSpot[];
 
     protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize) {
         this.licensePlate = licensePlate;
-        this.parkingSpots = new Array<ParkingSpot>();
+        this.parkingSpotsObject = new Array<ParkingSpot>();
         this.spotsNeeded = spotsNeeded;
         this.size = vehicleSize;
     }
@@ -27,14 +29,14 @@ export default abstract class Vehicle {
     }
 
     parkInSpot(parkingSpot: ParkingSpot) {
-        this.parkingSpots.push(parkingSpot);
+        this.parkingSpotsObject.push(parkingSpot);
     }
 
     clearSpots() {
-        for (let i = 0; i < this.parkingSpots.length; i++) {
-            this.parkingSpots[i].removeVehicle();
+        for (let i = 0; i < this.parkingSpotsObject.length; i++) {
+            this.parkingSpotsObject[i].removeVehicle();
         }
-        this.parkingSpots = []
+        this.parkingSpotsObject = []
     }
 
     getAttributes() {
@@ -45,7 +47,6 @@ export default abstract class Vehicle {
             size: this.size,
             vehicleType: this.constructor.name,
         }
-
     }
 
     abstract canFitInSpots(spot: ParkingSpot): boolean;
