@@ -1,9 +1,6 @@
 import Vehicle from "@/lib/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
 import Level from "./Level";
-import DatabaseManager from "@/lib/DatabaseManager"
-
-const DB = DatabaseManager.getInstance();
 
 export default class ParkingSpot {
         private vehicle: Vehicle | null = null;
@@ -27,7 +24,7 @@ export default class ParkingSpot {
         return this.isAvailable() && vehicle.canFitInSpots(this);
     }
 
-    async park(v: Vehicle): Promise<boolean> {
+    public park(v: Vehicle): boolean {
         if (!this.canFitVehicle(v)) {
             return false;
         }
