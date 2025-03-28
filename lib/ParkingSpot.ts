@@ -42,24 +42,6 @@ export default class ParkingSpot {
 
         // SAVE TO MODEL
         const parkingSpot = await ParkingSpotModel.findOne({ licensePlate }).lean();
-        if (vehicleData) {
-            res.status(409).json({vehicleData, message: "Vehicle already exists"});
-        }
-
-        const vehicleClass = VehicleClassMap[vehicleType as VehicleType];
-        const vehicle = new vehicleClass(licensePlate);
-        const spotsNeeded = vehicle.getSpotsNeeded()
-        const size = vehicle.getSize();
-
-        const vehicleModel = new VehicleModel({
-            licensePlate: licensePlate,
-            vehicleType: vehicleType,
-            spotsNeeded: spotsNeeded,
-            size: size
-        });
-        // create a mongoose model
-
-        await vehicleModel.save();
 
         return true;
     }

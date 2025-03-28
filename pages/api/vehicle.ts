@@ -6,14 +6,9 @@ import Car from "@/lib/Car";
 import Motorcycle from "@/lib/Motorcycle";
 import Vehicle from "@/lib/Vehicle"
 import { VehicleType } from "@/models/VehicleType";
+import { VehicleClassMap } from "@/lib/VehicleClassMap";
 
 type VehicleClass = new (licensePlate: string) => Vehicle;
-
-const VehicleClassMap: Record<VehicleType, VehicleClass> = {
-    [VehicleType.Bus]: Bus,
-    [VehicleType.Car]: Car,
-    [VehicleType.Motorcycle]: Motorcycle,
-};
 
 const DB = DatabaseManager.getInstance();
 
