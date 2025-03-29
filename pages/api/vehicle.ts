@@ -37,6 +37,7 @@ const createVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
         // create a mongoose model
 
         await vehicleModel.save();
+        console.log("New vehicle created from API")
         res.status(201).json(vehicle);
 
     } catch (error) {
@@ -48,6 +49,8 @@ const createVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const getVehicles = async (_req: NextApiRequest, res: NextApiResponse) => {
     try {
+        await DB.getConnection();
+
         const vehicles = await VehicleModel.find(); // return all vehicle
         res.status(200).json(vehicles);
     } catch (error) {
