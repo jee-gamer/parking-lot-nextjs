@@ -30,47 +30,24 @@ export default class DatabaseManager {
     }
 
     async saveVehicle(vehicle: Vehicle) {
-        const { licensePlate, parkingSpots, spotsNeeded, size, vehicleType } = vehicle.getAttributes()
-        const existedVehicle = await VehicleModel.findOne({ licensePlate })
+        const existingVehicle = await VehicleModel.findOne({ _id: vehicle._id });
 
-        if (!existedVehicle) {
-            const vehicleModel = new VehicleModel({
-                licensePlate: licensePlate,
-                parkingSpots: parkingSpots,
-                spotsNeeded: spotsNeeded,
-                size: size,
-                vehicleType: vehicleType,
-            });
-
-            await vehicleModel.save();
-            console.log("Vehicle created")
-            return
+        if (!existingVehicle) {
+            console.log("Vehicle created");
+        } else {
+            console.log("Vehicle updated");
         }
-
-        // Vehicle already exists
-        existedVehicle.parkingSpots = parkingSpots;
-        await existedVehicle.save();
-        console.log("Vehicle updated");
+        await vehicle.save()
     }
 
     async saveParkingLot(parkingLot: ParkingLot) {
-        const { id, levels, NUM_LEVELS } = parkingLot.getAttributes()
-        const existedParkingLot = await ParkingLotModel.findOne({ _id: id });
+        const existedParkingLot = await ParkingLotModel.findOne({ _id: parkingLot._id });
 
         if (!existedParkingLot) {
-            const parkingLotModel = new ParkingLotModel({
-                levels: levels,
-                NUM_LEVELS: NUM_LEVELS,
-            })
-
-            await parkingLotModel.save();
-            parkingLot.id = parkingLotModel._id;
             console.log("ParkingLot created")
-            return
+        } else {
+            console.log("ParkingLot updated");
         }
-
-        existedParkingLot.levels = levels;
-        await existedParkingLot.save();
-        console.log("ParkingLot updated");
+        await parkingLot.save()
     }
 }
