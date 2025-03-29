@@ -3,16 +3,15 @@ import ParkingSpot from "@/lib/ParkingSpot";
 import mongoose, { Document } from "mongoose";
 
 export default abstract class Vehicle extends Document {
-    parkingSpots: Array<mongoose.Types.ObjectId> | null = null // reference by Id
+    parkingSpots: Array<mongoose.Types.ObjectId> // reference by Id
     protected licensePlate: string;
     protected spotsNeeded: number;
     protected size: VehicleSize;
-    protected parkingSpotsObject: ParkingSpot[];
 
     protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize) {
         super();
         this.licensePlate = licensePlate;
-        this.parkingSpotsObject = new Array<ParkingSpot>();
+        this.parkingSpots = []
         this.spotsNeeded = spotsNeeded;
         this.size = vehicleSize;
     }
@@ -29,15 +28,17 @@ export default abstract class Vehicle extends Document {
         return this.licensePlate;
     }
 
-    parkInSpot(parkingSpot: ParkingSpot) {
-        this.parkingSpotsObject.push(parkingSpot);
+    parkInSpot(spot: ParkingSpot) {
+        this.parkingSpots.push(spot._id as mongoose.Types.ObjectId);
     }
 
-    clearSpots() {
-        for (let i = 0; i < this.parkingSpotsObject.length; i++) {
-            this.parkingSpotsObject[i].removeVehicle();
+    async clearSpots() {
+        await this.populate("parkingSpots");
+        const populatedSpots = this.parkingSpots as unknown as ParkingSpot[];
+        for (let i = 0; i < this.parkingSpots.length; i++) {
+            populatedSpots[i].removeVehicle();
         }
-        this.parkingSpotsObject = []
+        this.parkingSpots = []
     }
 
     getAttributes() {
