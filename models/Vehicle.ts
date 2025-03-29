@@ -1,12 +1,19 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { VehicleSize } from "@/models/VehicleSize"
 import ParkingSpot from "@/lib/ParkingSpot";
+import { TParkingSpot } from "@/models/ParkingSpot";
 
 interface IVehicle extends Document {
     licensePlate: string;
     parkingSpots: [mongoose.Types.ObjectId];
     spotsNeeded: number;
     size: VehicleSize;
+}
+
+export interface IVehicleMethods {
+    parkInSpot(spot: TParkingSpot): void;
+    clearSpots(): void;
+    canFitInSpots(parkingSpot: TParkingSpot): boolean;
 }
 
 const vehicleSchema = new mongoose.Schema<IVehicle>({
@@ -31,7 +38,7 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
 });
 
 
-vehicleSchema.methods.parkInSpot = function (parkingSpot: ParkingSpot) {
+vehicleSchema.methods.parkInSpot = function (parkingSpot: TParkingSpot) {
     this.parkingSpotsObject.push(parkingSpot);
 }
 
@@ -44,4 +51,5 @@ vehicleSchema.methods.clearSpots = function () {
 
 // abstract canFitInSpots(spot: ParkingSpot): boolean;
 
+export type TVehicle = IVehicle & IVehicleMethods
 export default mongoose.models.Vehicle || mongoose.model('Vehicle', vehicleSchema);
