@@ -36,7 +36,7 @@ export default class Level {
         return this.availableSpots;
     }
 
-    public parkVehicle(vehicle: Vehicle) {
+    public parkVehicle(vehicle: Vehicle): boolean {
         if (this.availableSpots < vehicle.getSpotsNeeded()) {
             console.log("Not enough available spots")
             return false;

@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { VehicleSize } from "@/models/VehicleSize"
-import ParkingSpot from "@/lib/ParkingSpot";
 import { TParkingSpot } from "@/models/ParkingSpot";
 
 interface IVehicle extends Document {
