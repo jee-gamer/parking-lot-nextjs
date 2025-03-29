@@ -1,8 +1,8 @@
 import { VehicleSize } from "@/models/VehicleSize"
 import ParkingSpot from "@/lib/ParkingSpot";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-export default abstract class Vehicle {
+export default abstract class Vehicle extends Document {
     parkingSpots: Array<mongoose.Types.ObjectId> | null = null // reference by Id
     protected licensePlate: string;
     protected spotsNeeded: number;
@@ -10,6 +10,7 @@ export default abstract class Vehicle {
     protected parkingSpotsObject: ParkingSpot[];
 
     protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize) {
+        super();
         this.licensePlate = licensePlate;
         this.parkingSpotsObject = new Array<ParkingSpot>();
         this.spotsNeeded = spotsNeeded;

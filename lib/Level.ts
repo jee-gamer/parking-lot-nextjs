@@ -1,14 +1,16 @@
 import ParkingSpot from "@/lib/ParkingSpot";
 import {VehicleSize} from "@/models/VehicleSize";
 import Vehicle from "@/lib/Vehicle";
+import mongoose, { Document } from "mongoose";
 
-export default class Level {
+export default class Level extends Document {
     private floor: number;
     private spots: ParkingSpot[];
     private availableSpots: number = 0; // number of free spots
     private static readonly SPOTS_PER_ROW: number = 10;
 
     constructor(flr: number, numberSpots: number) {
+        super();
         this.floor = flr;
         this.spots = new Array(numberSpots);
 

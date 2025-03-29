@@ -1,12 +1,12 @@
 import Vehicle from "@/lib/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import DatabaseManager from "@/lib/DatabaseManager";
 import VehicleModel from '@/models/Vehicle';
 
 const DB = DatabaseManager.getInstance();
 
-export default class ParkingSpot {
+export default class ParkingSpot extends Document {
         private vehicle: mongoose.Types.ObjectId | null = null; // mongo ID for vehicle
         private spotSize: VehicleSize;
         private row: number;
@@ -14,6 +14,7 @@ export default class ParkingSpot {
         private vehicleObject: Vehicle | null = null;
 
     constructor(r: number, n: number, sz: VehicleSize) {
+        super();
         this.row = r;
         this.spotNumber = n;
         this.spotSize = sz;
