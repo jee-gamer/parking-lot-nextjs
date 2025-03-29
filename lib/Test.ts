@@ -1,4 +1,4 @@
-import Bus from "@/lib/Bus";
+import Bus from "@/models/Bus";
 import DatabaseManager from "@/lib/DatabaseManager"
 import ParkingLot from "@/lib/ParkingLot";
 

@@ -1,7 +1,7 @@
 import {VehicleType} from "@/models/VehicleType";
-import Bus from "@/lib/Bus";
-import Car from "@/lib/Car";
-import Motorcycle from "@/lib/Motorcycle";
+import Bus from "@/models/Bus";
+import Car from "@/models/Car";
+import Motorcycle from "@/models/Motorcycle";
 
 export const VehicleClassMap: Record<VehicleType, VehicleClass> = {
     [VehicleType.Bus]: Bus,

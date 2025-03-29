@@ -1,9 +1,9 @@
 import DatabaseManager from "@/lib/DatabaseManager";
 import VehicleModel from "@/models/Vehicle"
 import { NextApiRequest, NextApiResponse } from 'next';
-import Bus from "@/lib/Bus";
-import Car from "@/lib/Car";
-import Motorcycle from "@/lib/Motorcycle";
+import Bus from "@/models/Bus";
+import Car from "@/models/Car";
+import Motorcycle from "@/models/Motorcycle";
 import Vehicle from "@/lib/Vehicle"
 import { VehicleType } from "@/models/VehicleType";
 import { VehicleClassMap } from "@/lib/VehicleClassMap";
