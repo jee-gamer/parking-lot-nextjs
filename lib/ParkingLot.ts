@@ -17,7 +17,7 @@ export default class ParkingLot extends Document {
 
     async parkVehicle(vehicle: Vehicle) {
         for (let i=0; i< this.levels.length; i++) {
-            if (this.levels[i].parkVehicle(vehicle)) {
+            if (await this.levels[i].parkVehicle(vehicle)) {
 
                 await DB.getConnection()
                 await DB.saveParkingLot(this)

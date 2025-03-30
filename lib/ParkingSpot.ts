@@ -1,6 +1,6 @@
 import Vehicle from "@/lib/Vehicle";
 import {VehicleSize} from "@/models/VehicleSize";
-import mongoose, { Document } from "mongoose";
+import mongoose, {Document} from "mongoose";
 import DatabaseManager from "@/lib/DatabaseManager";
 import VehicleModel from '@/models/Vehicle';
 
@@ -11,7 +11,6 @@ export default class ParkingSpot extends Document {
         private spotSize: VehicleSize;
         private row: number;
         private spotNumber: number;
-        private vehicleObject: Vehicle | null = null;
 
     constructor(r: number, n: number, sz: VehicleSize) {
         super();
@@ -20,27 +19,26 @@ export default class ParkingSpot extends Document {
         this.spotSize = sz;
     }
 
-    public isAvailable(): boolean {
-        return this.vehicleObject == null;
+    async isAvailable(): Promise<boolean> {
+        await this.populate("vehicle"); // if no id nothing happens
+        return this.vehicle == null;
     }
 
-    public canFitVehicle(vehicle: Vehicle): boolean {
-        return this.isAvailable() && vehicle.canFitInSpots(this);
+    async canFitVehicle(vehicle: Vehicle): Promise<boolean> {
+        return await this.isAvailable() && vehicle.canFitInSpots(this);
     }
 
-    async park(v: Vehicle): Promise<boolean> {
+    async park(vehicle: Vehicle): Promise<boolean> {
         await DB.getConnection()
 
-        if (!this.canFitVehicle(v)) {
+        const canFit = await this.canFitVehicle(vehicle);
+        if (!canFit) {
             console.log(`Can't fit vehicle`)
             return false;
         }
-        this.vehicleObject = v;
-        this.vehicleObject.parkInSpot(this);
 
-        const thisVehicle = await VehicleModel.findOne({ licensePlate: v.getLicensePlate()});
-        this.vehicle = thisVehicle._id
-        // Don't care about error case for now
+        vehicle.parkInSpot(this);
+        this.vehicle = vehicle._id as mongoose.Types.ObjectId;
 
         return true;
     }
@@ -59,7 +57,7 @@ export default class ParkingSpot extends Document {
 
     public getAttributes() {
         return {
-            vehicle: this.vehicleObject,
+            vehicle: this.vehicle,
             spotSize: this.spotSize,
             row: this.row,
             spotNumber: this.spotNumber,
@@ -67,20 +65,6 @@ export default class ParkingSpot extends Document {
     }
 
     public removeVehicle() {
-        this.vehicleObject = null;
+        this.vehicle = null;
     }
-
-    public print() {
-        if (this.vehicleObject == null) {
-            if (this.spotSize == VehicleSize.Compact) {
-                console.log("c");
-            } else if (this.spotSize == VehicleSize.Large) {
-                console.log('l');
-            } else if (this.spotSize == VehicleSize.Motorcycle) {
-                console.log('m');
-            }
-        } else {
-            this.vehicleObject.print()
-        }
-     }
 }

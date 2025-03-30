@@ -9,7 +9,6 @@ interface IVehicle extends Document {
     parkingSpots: [mongoose.Types.ObjectId];
     spotsNeeded: number;
     size: VehicleSize;
-    vehicleType: VehicleType; // added because all vehicle is in this class
 }
 
 const vehicleSchema = new mongoose.Schema<IVehicle>({
@@ -29,11 +28,6 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
     size: {
         type: String,
         enum: Object.values(VehicleSize),
-        required: true,
-    },
-    vehicleType: {
-        type: String,
-        enum: Object.values(VehicleType),
         required: true,
     },
 });

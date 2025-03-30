@@ -41,16 +41,6 @@ export default abstract class Vehicle extends Document {
         this.parkingSpots = []
     }
 
-    getAttributes() {
-        return {
-            licensePlate: this.licensePlate,
-            parkingSpots: this.parkingSpots,
-            spotsNeeded: this.spotsNeeded,
-            size: this.size,
-            vehicleType: this.constructor.name,
-        }
-    }
-
     abstract canFitInSpots(spot: ParkingSpot): boolean;
     abstract print(): void;
 

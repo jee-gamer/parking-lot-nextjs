@@ -38,12 +38,12 @@ export default class Level extends Document {
         return this.availableSpots;
     }
 
-    public parkVehicle(vehicle: Vehicle) {
+    async parkVehicle(vehicle: Vehicle) {
         if (this.availableSpots < vehicle.getSpotsNeeded()) {
             console.log("Not enough available spots")
             return false;
         }
-        let spotNumber: number =  this.findAvailableSpots(vehicle);
+        let spotNumber: number =  await this.findAvailableSpots(vehicle);
         if (spotNumber < 0) {
             console.log("Not enough available spots after check")
             return false;
@@ -52,8 +52,7 @@ export default class Level extends Document {
     }
 
     async parkStartingAtSpot(spotNumber: number, vehicle: Vehicle) {
-        // API
-        vehicle.clearSpots();
+        await vehicle.clearSpots();
         let success: boolean = true;
         for (let i = spotNumber; i < spotNumber + vehicle.getSpotsNeeded(); i++) {
             const result = await this.spots[i].park(vehicle);
@@ -64,7 +63,7 @@ export default class Level extends Document {
         return success;
     }
 
-    private findAvailableSpots(vehicle: Vehicle): number {
+    async findAvailableSpots(vehicle: Vehicle): Promise<number> {
         // API
         let spotsNeeded: number = vehicle.getSpotsNeeded();
         let lastRow: number = -1;
@@ -76,7 +75,7 @@ export default class Level extends Document {
                 spotsFound = 0;
                 lastRow = spot.getRow();
             }
-            if (spot.canFitVehicle(vehicle)) {
+            if (await spot.canFitVehicle(vehicle)) {
                 spotsFound++;
             } else {
                 spotsFound = 0;
@@ -88,20 +87,7 @@ export default class Level extends Document {
         return -1;
     }
 
-    public print() {
-        let lastRow: number = -1;
-        for (let i=0; i<this.spots.length; i++) {
-            let spot: ParkingSpot = this.spots[i];
-            if (spot.getRow() != lastRow) {
-                console.log("  ");
-                lastRow = spot.getRow();
-            }
-            spot.print();
-        }
-    }
-
     public spotFreed() {
-        // API
         this.availableSpots++;
     }
 }
