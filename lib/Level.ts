@@ -1,14 +1,20 @@
 import {VehicleSize} from "@/models/VehicleSize";
-import ParkingSpot from "@/lib/ParkingSpot";
+import ParkingSpot from "@/models/ParkingSpot";
+import mongoose from "mongoose";
 
 export default class Level {
-    private floor: number;
-    private spots: ParkingSpot[];
+    private floor: number | undefined;
+    private spots: mongoose.Types.ObjectId[] | undefined;
     private availableSpots: number = 0; // number of free spots
 
-    constructor(flr: number, numberSpots: number, spots_per_row: number) {
+    constructor(flr: number, spots: mongoose.Types.ObjectId[], availableSpots: number) {
         this.floor = flr;
-        this.spots = new Array(numberSpots);
+        this.spots = spots
+        this.availableSpots = availableSpots;
+    }
+
+    static async create(flr: number, numberSpots: number, spots_per_row: number) {
+        const spots = new Array<mongoose.Types.ObjectId>;
 
         let largeSpots = Math.floor(numberSpots / 4);
         let bikeSpots = Math.floor(numberSpots / 4);
@@ -24,9 +30,13 @@ export default class Level {
             }
 
             let row = Math.floor(i / spots_per_row);
-            this.spots[i] = new ParkingSpot(row, i, sz);
+            spots[i] = await ParkingSpot.create({
+                spotSize: sz,
+                row: row,
+                spotNumber: i
+            })
         }
 
-        this.availableSpots = numberSpots;
+        return new Level(flr, spots, numberSpots);
     }
 }

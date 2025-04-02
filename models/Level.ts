@@ -49,7 +49,6 @@ levelSchema.methods.parkVehicle = async function (vehicle: TVehicle): Promise<bo
 }
 
 levelSchema.methods.parkStartingAtSpot = async function (spotNumber: number, vehicle: TVehicle) {
-    await this.populate("spots")
     await vehicle.clearSpots();
     let success: boolean = true;
     for (let i = spotNumber; i < spotNumber + vehicle.spotsNeeded; i++) {
@@ -62,7 +61,6 @@ levelSchema.methods.parkStartingAtSpot = async function (spotNumber: number, veh
 }
 
 levelSchema.methods.findAvailableSpots = async function (vehicle: TVehicle): Promise<number> {
-    await this.populate("spots")
     let spotsNeeded: number = vehicle.spotsNeeded;
     let lastRow: number = -1;
     let spotsFound: number = 0;

@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 import { VehicleSize } from "@/models/VehicleSize"
 import { TParkingSpot } from "@/models/ParkingSpot";
 
+
 interface IVehicle extends Document {
     licensePlate: string;
     parkingSpots: [mongoose.Types.ObjectId];
@@ -38,12 +39,10 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
 
 
 vehicleSchema.methods.parkInSpot = async function (parkingSpot: TParkingSpot) {
-    await this.populate("parkingSpots")
     this.parkingSpots.push(parkingSpot);
 }
 
 vehicleSchema.methods.clearSpots = async function () {
-    await this.populate("parkingSpots")
     for (let i = 0; i < this.parkingSpots.length; i++) {
         this.parkingSpots[i].removeVehicle();
     }

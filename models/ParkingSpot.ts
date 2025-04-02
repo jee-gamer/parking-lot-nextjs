@@ -69,5 +69,6 @@ parkingSpotSchema.methods.park = async function(vehicle: TVehicle): Promise<bool
 }
 
 export type TParkingSpot = IParkingSpot & IParkingSpotMethods;
-export default mongoose.models.ParkingSpot || mongoose.model("ParkingSpot", parkingSpotSchema);
 export { parkingSpotSchema }
+const ParkingSpot = mongoose.models.ParkingSpot || mongoose.model("ParkingSpot", parkingSpotSchema);
+export default ParkingSpot
