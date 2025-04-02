@@ -1,19 +1,32 @@
 import { VehicleSize } from "@/models/VehicleSize"
 import ParkingSpot from "@/lib/ParkingSpot";
 import mongoose from "mongoose";
+import VehicleModel from "@/models/Vehicle"
+import { VehicleType } from "@/models/VehicleType"
 
 export default abstract class Vehicle {
-    parkingSpots: Array<mongoose.Types.ObjectId> | null = null // reference by Id
+    private _id: any
+    parkingSpots: Array<mongoose.Types.ObjectId> | ParkingSpot[]; // reference by Id
     protected licensePlate: string;
     protected spotsNeeded: number;
     protected size: VehicleSize;
-    protected parkingSpotsObject: ParkingSpot[];
 
-    protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize) {
+    protected constructor(licensePlate: string, spotsNeeded: number, vehicleSize: VehicleSize, vehicleType: VehicleType, create?: boolean) {
         this.licensePlate = licensePlate;
-        this.parkingSpotsObject = new Array<ParkingSpot>();
+        this.parkingSpots = new Array<ParkingSpot>();
         this.spotsNeeded = spotsNeeded;
         this.size = vehicleSize;
+
+        if (create) {
+            const vehicleDoc = new VehicleModel({
+                licensePlate: this.licensePlate,
+                spotsNeeded: this.spotsNeeded,
+                size: this.size,
+                vehicleType: vehicleType,
+            })
+            vehicleDoc.save();
+            this._id = vehicleDoc._id;
+        }
     }
 
     getSpotsNeeded() {
@@ -29,14 +42,16 @@ export default abstract class Vehicle {
     }
 
     parkInSpot(parkingSpot: ParkingSpot) {
-        this.parkingSpotsObject.push(parkingSpot);
+        // @ts-ignore
+        this.parkingSpots.push(parkingSpot);
     }
 
     clearSpots() {
-        for (let i = 0; i < this.parkingSpotsObject.length; i++) {
-            this.parkingSpotsObject[i].removeVehicle();
+        for (let i = 0; i < this.parkingSpots.length; i++) {
+            // @ts-ignore
+            this.parkingSpots[i].removeVehicle();
         }
-        this.parkingSpotsObject = []
+        this.parkingSpots = []
     }
 
     getAttributes() {

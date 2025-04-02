@@ -7,11 +7,10 @@ import VehicleModel from '@/models/Vehicle';
 const DB = DatabaseManager.getInstance();
 
 export default class ParkingSpot {
-        private vehicle: mongoose.Types.ObjectId | null = null; // mongo ID for vehicle
+        private vehicle: mongoose.Types.ObjectId | Vehicle | null = null; // mongo ID for vehicle
         private spotSize: VehicleSize;
         private row: number;
         private spotNumber: number;
-        private vehicleObject: Vehicle | null = null;
 
     constructor(r: number, n: number, sz: VehicleSize) {
         this.row = r;
