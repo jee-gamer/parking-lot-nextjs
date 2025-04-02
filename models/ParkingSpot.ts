@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
 import {VehicleSize} from "@/models/VehicleSize";
-import Vehicle from "@/models/Vehicle";
 import { TVehicle } from "@/models/Vehicle"
 import DatabaseManager from "@/lib/DatabaseManager";
 

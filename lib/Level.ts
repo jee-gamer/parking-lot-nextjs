@@ -1,9 +1,9 @@
-import { TParkingSpot } from "@/models/ParkingSpot";
 import {VehicleSize} from "@/models/VehicleSize";
+import ParkingSpot from "@/lib/ParkingSpot";
 
 export default class Level {
     private floor: number;
-    private spots: TParkingSpot[];
+    private spots: ParkingSpot[];
     private availableSpots: number = 0; // number of free spots
     private static readonly SPOTS_PER_ROW: number = 10;
 

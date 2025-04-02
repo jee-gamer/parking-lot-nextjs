@@ -1,5 +1,4 @@
 import Level from "@/lib/Level"
-import Vehicle from "@/lib/Vehicle";
 import DatabaseManager from "@/lib/DatabaseManager";
 import mongoose from "mongoose";
 
