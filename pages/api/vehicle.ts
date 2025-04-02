@@ -19,6 +19,10 @@ const createVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         const vehicleClass = VehicleClassMap[vehicleType as VehicleType];
+        if (!vehicleClass) {
+            res.status(404).json({vehicleData, message: "vehicleType not found"});
+            return;
+        }
         const vehicle = await vehicleClass.create({ licensePlate });
 
         console.log("New vehicle created from API")

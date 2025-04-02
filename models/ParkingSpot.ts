@@ -41,11 +41,11 @@ const parkingSpotSchema = new mongoose.Schema<IParkingSpot>({
 });
 
 parkingSpotSchema.methods.removeVehicle = function() {
-    this.vehicleObject = null;
+    this.vehicle = null;
 }
 
 parkingSpotSchema.methods.isAvailable = function(): boolean {
-    return this.vehicleObject == null;
+    return this.vehicle == null;
 }
 
 parkingSpotSchema.methods.canFitVehicle = function(

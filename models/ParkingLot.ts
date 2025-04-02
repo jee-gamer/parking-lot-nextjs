@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import levelSchema from "@/models/Level";
 import Level from "@/lib/Level"
 import {TVehicle} from "@/models/Vehicle";
@@ -10,7 +10,7 @@ const totalSpots = 40;
 const spotsPerRow = 20;
 const NUM_LEVELS = 5;
 
-interface IParkingLot {
+interface IParkingLot extends Document {
     levels: Level[];
     NUM_LEVELS: number;
 }
@@ -49,6 +49,7 @@ parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
     for (let i=0; i< this.levels.length; i++) {
         await vehicle.populate("parkingSpots")
         await this.populate("levels.spots")
+
         if (await this.levels[i].parkVehicle(vehicle)) {
 
             await DB.getConnection()

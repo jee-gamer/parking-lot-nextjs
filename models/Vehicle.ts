@@ -22,10 +22,11 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
         required: true,
         unique: true,
     },
-    parkingSpots: [{
-        type: Schema.Types.ObjectId,
-        ref: "ParkingSpot"
-    }],
+    parkingSpots: {
+        type: [Schema.Types.ObjectId],
+        ref: "ParkingSpot",
+        default: [],
+    },
     spotsNeeded: {
         type: Number,
         required: true,
@@ -46,7 +47,7 @@ vehicleSchema.methods.clearSpots = async function () {
     for (let i = 0; i < this.parkingSpots.length; i++) {
         this.parkingSpots[i].removeVehicle();
     }
-    this.parkingSpots = []
+    this.parkingSpots = [];
     return true
 }
 

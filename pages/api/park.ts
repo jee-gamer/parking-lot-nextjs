@@ -18,15 +18,23 @@ const parkVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
             parkingLot = await ParkingLot.create({})
         }
 
-        let vehicle: TVehicle = (await Vehicle.findOne({ licensePlate }))!;
+        let vehicle: TVehicle = (await Vehicle.findOne({ licensePlate }).populate('parkingSpots'))!;
+
         if (!vehicle) {
-            res.status(404).json({ message: `Vehicle with licensePlate "${licensePlate}" not found` });
+            res.status(404).json({ message: `Vehicle with licensePlate '${licensePlate}' not found` });
+            return
+        }
+
+        if (vehicle.parkingSpots.length > 0) {
+            res.status(400).json({ message: `Vehicle with licensePlate '${licensePlate}' already parked`})
             return
         }
 
         await parkingLot.parkVehicle(vehicle);
+        await parkingLot.save();
+        await vehicle.save();
 
-        res.status(200).json({ message: `Successfully parked vehicle with licensePlate "${licensePlate}"` });
+        res.status(200).json({ message: `Successfully parked vehicle with licensePlate '${licensePlate}'` });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: `Internal Server Error: ${error}` });
@@ -38,14 +46,20 @@ const unparkVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         await DB.getConnection();
 
-        let vehicle: TVehicle = (await Vehicle.findOne({ licensePlate }))!;
+        let vehicle: TVehicle = (await Vehicle.findOne({ licensePlate }).populate('parkingSpots'))!;
         if (!vehicle) {
-            res.status(404).json({ message: `Vehicle with licensePlate "${licensePlate}" not found` });
+            res.status(404).json({ message: `Vehicle with licensePlate '${licensePlate}' not found` });
+            return
+        }
+
+        if (vehicle.parkingSpots.length <= 0) {
+            res.status(400).json({ message: `Vehicle with licensePlate '${licensePlate}' is already unparked`})
             return
         }
 
         await vehicle.clearSpots()
-        res.status(200).json({ message: `Successfully unparked vehicle with licensePlate "${licensePlate}"` });
+        await vehicle.save()
+        res.status(200).json({ message: `Successfully unparked vehicle with licensePlate '${licensePlate}'` });
 
     } catch (error) {
         console.log(error);
