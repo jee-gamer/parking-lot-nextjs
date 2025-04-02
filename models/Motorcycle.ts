@@ -1,4 +1,4 @@
-import VehicleModel from "@/models/Vehicle";
+import VehicleModel, {TVehicle} from "@/models/Vehicle";
 import ParkingSpot from "@/lib/ParkingSpot"
 import { VehicleSize } from "@/models/VehicleSize";
 import mongoose from "mongoose";
@@ -19,4 +19,4 @@ MotorcycleSchema.methods.canFitInSpots = function (_spot: ParkingSpot): boolean 
     return true
 }
 
-export const Motorcycle = VehicleModel.discriminator("Motorcycle", MotorcycleSchema)
+export const Motorcycle = VehicleModel.discriminator<TVehicle>("Motorcycle", MotorcycleSchema)

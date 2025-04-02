@@ -47,6 +47,7 @@ vehicleSchema.methods.clearSpots = async function () {
         this.parkingSpots[i].removeVehicle();
     }
     this.parkingSpots = []
+    return true
 }
 
 // abstract canFitInSpots(spot: ParkingSpot): boolean;
