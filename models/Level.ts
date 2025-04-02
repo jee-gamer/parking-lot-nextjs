@@ -1,11 +1,10 @@
 import mongoose from "mongoose";
-import parkingSpotSchema from "@/models/ParkingSpot"
-import ParkingSpot from "@/lib/ParkingSpot"
-import Vehicle, {TVehicle} from "@/models/Vehicle";
+import parkingSpotSchema, { TParkingSpot } from "@/models/ParkingSpot"
+import {TVehicle} from "@/models/Vehicle";
 
 interface ILevel {
     floor: number;
-    spots: ParkingSpot[];
+    spots: [TParkingSpot];
     availableSpots: number;
     SPOTS_PER_ROW: number;
 }
@@ -32,6 +31,59 @@ const levelSchema = new mongoose.Schema<ILevel>({
         default: 10,
     }
 })
+
+levelSchema.methods.parkVehicle = function (vehicle: TVehicle): boolean {
+    if (this.availableSpots < vehicle.spotsNeeded) {
+        console.log("Not enough available spots")
+        return false;
+    }
+    let spotNumber: number =  this.findAvailableSpots(vehicle);
+    if (spotNumber < 0) {
+        console.log("Not enough available spots after check")
+        return false;
+    }
+    return this.parkStartingAtSpot(spotNumber, vehicle);
+}
+
+levelSchema.methods.parkStartingAtSpot = async function (spotNumber: number, vehicle: TVehicle) {
+    vehicle.clearSpots();
+    let success: boolean = true;
+    for (let i = spotNumber; i < spotNumber + vehicle.spotsNeeded; i++) {
+        const result = await this.spots[i].park(vehicle);
+        success &&= result
+    }
+    this.availableSpots -= vehicle.spotsNeeded;
+    console.log(`${success} at parking at the spot`);
+    return success;
+}
+
+levelSchema.methods.findAvailableSpots = function (vehicle: TVehicle): number {
+    // API
+    let spotsNeeded: number = vehicle.spotsNeeded;
+    let lastRow: number = -1;
+    let spotsFound: number = 0;
+
+    for (let i=0; i<this.spots.length; i++) {
+        let spot: TParkingSpot = this.spots[i];
+        if (lastRow != spot.row) { // if found the spot that's not the same row then it can't be used anymore so reset spot count and consider the row you just see.
+            spotsFound = 0;
+            lastRow = spot.row;
+        }
+        if (spot.canFitVehicle(vehicle)) {
+            spotsFound++;
+        } else {
+            spotsFound = 0;
+        }
+        if (spotsFound == spotsNeeded) {
+            return i - (spotsNeeded - 1);
+        }
+    }
+    return -1;
+}
+
+levelSchema.methods.spotsFreed = function () {
+    this.availableSpots++;
+}
 
 export type TLevel = ILevel & ILevelMethods;
 export default levelSchema;
