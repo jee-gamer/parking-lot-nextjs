@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import parkingSpotSchema, { TParkingSpot } from "@/models/ParkingSpot"
+import { TParkingSpot } from "@/models/ParkingSpot"
 import {TVehicle} from "@/models/Vehicle";
 
 interface ILevel {
     floor: number;
-    spots: [TParkingSpot];
+    spots: [mongoose.Types.ObjectId];
     availableSpots: number;
     SPOTS_PER_ROW: number;
 }
@@ -21,7 +21,10 @@ const levelSchema = new mongoose.Schema<ILevel>({
         type: Number,
         required: true,
     },
-    spots: [parkingSpotSchema],
+    spots: [{
+        type: mongoose.Types.ObjectId,
+        ref: "ParkingSpot",
+    }],
     availableSpots: {
         type: Number,
         required: true,
@@ -32,12 +35,12 @@ const levelSchema = new mongoose.Schema<ILevel>({
     }
 })
 
-levelSchema.methods.parkVehicle = function (vehicle: TVehicle): boolean {
+levelSchema.methods.parkVehicle = async function (vehicle: TVehicle): Promise<boolean> {
     if (this.availableSpots < vehicle.spotsNeeded) {
         console.log("Not enough available spots")
         return false;
     }
-    let spotNumber: number =  this.findAvailableSpots(vehicle);
+    let spotNumber: number =  await this.findAvailableSpots(vehicle);
     if (spotNumber < 0) {
         console.log("Not enough available spots after check")
         return false;
@@ -46,7 +49,8 @@ levelSchema.methods.parkVehicle = function (vehicle: TVehicle): boolean {
 }
 
 levelSchema.methods.parkStartingAtSpot = async function (spotNumber: number, vehicle: TVehicle) {
-    vehicle.clearSpots();
+    await this.populate("spots")
+    await vehicle.clearSpots();
     let success: boolean = true;
     for (let i = spotNumber; i < spotNumber + vehicle.spotsNeeded; i++) {
         const result = await this.spots[i].park(vehicle);
@@ -57,8 +61,8 @@ levelSchema.methods.parkStartingAtSpot = async function (spotNumber: number, veh
     return success;
 }
 
-levelSchema.methods.findAvailableSpots = function (vehicle: TVehicle): number {
-    // API
+levelSchema.methods.findAvailableSpots = async function (vehicle: TVehicle): Promise<number> {
+    await this.populate("spots")
     let spotsNeeded: number = vehicle.spotsNeeded;
     let lastRow: number = -1;
     let spotsFound: number = 0;
@@ -68,14 +72,16 @@ levelSchema.methods.findAvailableSpots = function (vehicle: TVehicle): number {
         if (lastRow != spot.row) { // if found the spot that's not the same row then it can't be used anymore so reset spot count and consider the row you just see.
             spotsFound = 0;
             lastRow = spot.row;
+            console.log(`Set row to ${spot.row}`);
         }
         if (spot.canFitVehicle(vehicle)) {
+            console.log(`Spots found`)
             spotsFound++;
         } else {
             spotsFound = 0;
         }
         if (spotsFound == spotsNeeded) {
-            return i - (spotsNeeded - 1);
+            return i - (spotsNeeded - 1); // return i - those to get the first spot that the vehicle can park
         }
     }
     return -1;

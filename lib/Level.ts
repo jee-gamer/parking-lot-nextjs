@@ -5,9 +5,8 @@ export default class Level {
     private floor: number;
     private spots: ParkingSpot[];
     private availableSpots: number = 0; // number of free spots
-    private static readonly SPOTS_PER_ROW: number = 10;
 
-    constructor(flr: number, numberSpots: number) {
+    constructor(flr: number, numberSpots: number, spots_per_row: number) {
         this.floor = flr;
         this.spots = new Array(numberSpots);
 
@@ -24,7 +23,7 @@ export default class Level {
                 sz = VehicleSize.Compact;
             }
 
-            let row = Math.floor(i / Level.SPOTS_PER_ROW);
+            let row = Math.floor(i / spots_per_row);
             this.spots[i] = new ParkingSpot(row, i, sz);
         }
 

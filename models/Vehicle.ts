@@ -11,7 +11,7 @@ interface IVehicle extends Document {
 
 export interface IVehicleMethods {
     parkInSpot(spot: TParkingSpot): void;
-    clearSpots(): void;
+    clearSpots(): Promise<void>;
     canFitInSpots(parkingSpot: TParkingSpot): boolean;
 }
 
@@ -37,15 +37,17 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
 });
 
 
-vehicleSchema.methods.parkInSpot = function (parkingSpot: TParkingSpot) {
-    this.parkingSpotsObject.push(parkingSpot);
+vehicleSchema.methods.parkInSpot = async function (parkingSpot: TParkingSpot) {
+    await this.populate("parkingSpots")
+    this.parkingSpots.push(parkingSpot);
 }
 
-vehicleSchema.methods.clearSpots = function () {
-    for (let i = 0; i < this.parkingSpotsObject.length; i++) {
-        this.parkingSpotsObject[i].removeVehicle();
+vehicleSchema.methods.clearSpots = async function () {
+    await this.populate("parkingSpots")
+    for (let i = 0; i < this.parkingSpots.length; i++) {
+        this.parkingSpots[i].removeVehicle();
     }
-    this.parkingSpotsObject = []
+    this.parkingSpots = []
 }
 
 // abstract canFitInSpots(spot: ParkingSpot): boolean;

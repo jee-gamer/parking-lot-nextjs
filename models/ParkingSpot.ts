@@ -62,11 +62,12 @@ parkingSpotSchema.methods.park = async function(vehicle: TVehicle): Promise<bool
     return false;
     }
 
+    this.vehicle = vehicle;
     this.vehicle.parkInSpot(this);
-    await this.vehicle.save()
 
     return true;
 }
 
 export type TParkingSpot = IParkingSpot & IParkingSpotMethods;
-export default parkingSpotSchema
+export default mongoose.models.ParkingSpot || mongoose.model("ParkingSpot", parkingSpotSchema);
+export { parkingSpotSchema }

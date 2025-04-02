@@ -6,7 +6,8 @@ import DatabaseManager from "@/lib/DatabaseManager";
 
 const DB = DatabaseManager.getInstance();
 
-const spots = 10;
+const totalSpots = 40;
+const spotsPerRow = 20;
 const NUM_LEVELS = 5;
 
 interface IParkingLot {
@@ -23,13 +24,13 @@ const parkingLotSchema = new mongoose.Schema<IParkingLot>({
 })
 
 parkingLotSchema.pre("save", function (next) {
-    this.levels = Array.from({length: this.NUM_LEVELS}, (_, i) => new Level(i, spots));
+    this.levels = Array.from({length: this.NUM_LEVELS}, (_, i) => new Level(i, totalSpots, spotsPerRow));
     next();
 });
 
 parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
     for (let i=0; i< this.levels.length; i++) {
-        if (this.levels[i].parkVehicle(vehicle)) {
+        if (await this.levels[i].parkVehicle(vehicle)) {
 
             await DB.getConnection()
             await this.save()
