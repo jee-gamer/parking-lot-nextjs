@@ -1,14 +1,8 @@
 import DatabaseManager from "@/lib/DatabaseManager";
-import VehicleModel from "@/models/Vehicle"
 import { NextApiRequest, NextApiResponse } from 'next';
-import Bus from "@/models/Bus";
-import Car from "@/models/Car";
-import Motorcycle from "@/models/Motorcycle";
-import Vehicle from "@/lib/Vehicle"
+import Vehicle, {TVehicle} from "@/models/Vehicle"
 import { VehicleType } from "@/models/VehicleType";
-import { VehicleClassMap } from "@/lib/VehicleClassMap";
-
-type VehicleClass = new (licensePlate: string) => Vehicle;
+import { VehicleClassMap } from "@/models/VehicleClassMap";
 
 const DB = DatabaseManager.getInstance();
 
@@ -18,25 +12,15 @@ const createVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         await DB.getConnection();
 
-        const vehicleData = await VehicleModel.findOne({ licensePlate }).lean();
+        const vehicleData: TVehicle = (await Vehicle.findOne({ licensePlate }))!;
         if (vehicleData) {
             res.status(409).json({vehicleData, message: "Vehicle already exists"});
+            return;
         }
 
         const vehicleClass = VehicleClassMap[vehicleType as VehicleType];
-        const vehicle = new vehicleClass(licensePlate);
-        const spotsNeeded = vehicle.getSpotsNeeded()
-        const size = vehicle.getSize();
+        const vehicle = await vehicleClass.create({ licensePlate });
 
-        const vehicleModel = new VehicleModel({
-            licensePlate: licensePlate,
-            vehicleType: vehicleType,
-            spotsNeeded: spotsNeeded,
-            size: size
-        });
-        // create a mongoose model
-
-        await vehicleModel.save();
         console.log("New vehicle created from API")
         res.status(201).json(vehicle);
 
@@ -51,7 +35,7 @@ const getVehicles = async (_req: NextApiRequest, res: NextApiResponse) => {
     try {
         await DB.getConnection();
 
-        const vehicles = await VehicleModel.find(); // return all vehicle
+        const vehicles = await Vehicle.find(); // return all vehicle
         res.status(200).json(vehicles);
     } catch (error) {
         console.error(error);
@@ -65,12 +49,12 @@ const removeVehicles = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         await DB.getConnection();
 
-        const find = await VehicleModel.findOne({ licensePlate }).lean();
+        const find = await Vehicle.findOne({ licensePlate }).lean();
         if (!find) {
             console.error("Vehicle not found");
             res.status(404).json({message: "Vehicle not found"});
         }
-        await VehicleModel.deleteOne({ licensePlate }).lean();
+        await Vehicle.deleteOne({ licensePlate }).lean();
         res.status(200).json({message: "Vehicle deleted successfully"})
 
     } catch (error) {

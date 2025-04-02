@@ -15,6 +15,10 @@ interface IParkingLot {
     NUM_LEVELS: number;
 }
 
+interface IParkingLotMethods {
+    parkVehicle(vehicle: TVehicle): Promise<boolean>
+}
+
 const parkingLotSchema = new mongoose.Schema<IParkingLot>({
     levels: [levelSchema],
     NUM_LEVELS: {
@@ -24,13 +28,21 @@ const parkingLotSchema = new mongoose.Schema<IParkingLot>({
 })
 
 parkingLotSchema.pre("save", async function (next) {
-    this.levels = await Promise.all(
-        Array.from({length: this.NUM_LEVELS}, (_, i) =>
-            Level.create(i, totalSpots, spotsPerRow)
-        )
-    );
-    next();
+    const ParkingLot = mongoose.model("ParkingLot");
+    const exist = await ParkingLot.findOne({})
+    if (this.isNew && exist) {
+        // Instead of saving a new one, replace 'this' with the existing instance
+        this._id = exist._id;
+        this.isNew = false; // Prevents insert operation, forces update instead
 
+    } else {
+        this.levels = await Promise.all(
+            Array.from({length: this.NUM_LEVELS}, (_, i) =>
+                Level.create(i, totalSpots, spotsPerRow)
+            )
+        );
+    }
+    next();
 });
 
 parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
@@ -48,4 +60,5 @@ parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
     return false;
 }
 
+export type TParkingLot = IParkingLot & IParkingLotMethods;
 export default mongoose.models.ParkingLot || mongoose.model("ParkingLot", parkingLotSchema);
