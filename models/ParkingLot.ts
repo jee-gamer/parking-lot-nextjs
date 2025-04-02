@@ -16,10 +16,13 @@ interface IParkingLot {
 
 const parkingLotSchema = new mongoose.Schema<IParkingLot>({
     levels: [levelSchema],
-    NUM_LEVELS: NUM_LEVELS,
+    NUM_LEVELS: {
+        type: Number,
+        default: NUM_LEVELS,
+    }
 })
 
-parkingLotSchema.pre("init", function (next) {
+parkingLotSchema.pre("save", function (next) {
     this.levels = Array.from({length: this.NUM_LEVELS}, (_, i) => new Level(i, spots));
     next();
 });

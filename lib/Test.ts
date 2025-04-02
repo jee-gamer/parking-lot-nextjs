@@ -1,15 +1,15 @@
-import Bus from "@/models/Bus";
-import DatabaseManager from "@/lib/DatabaseManager"
-import ParkingLot from "@/lib/ParkingLot";
+import { Bus } from "@/models/Bus";
+import ParkingLot from "@/models/ParkingLot";
+import DatabaseManager from "@/lib/DatabaseManager";
 
 const DB = DatabaseManager.getInstance();
 await DB.getConnection()
 
-const parkingLot = new ParkingLot()
-await DB.saveParkingLot(parkingLot)
-const bus = new Bus("5477")
-await DB.saveVehicle(bus)
+const parkingLot = await ParkingLot.create({})
+console.log(parkingLot)
+const bus = await Bus.create({ licensePlate: "111" })
+console.log(bus)
 
-const status = await parkingLot.parkVehicle(bus)
-
-console.log(status)
+// const status = await parkingLot.parkVehicle(bus)
+//
+// console.log(status)

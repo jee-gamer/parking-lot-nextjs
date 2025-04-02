@@ -4,12 +4,19 @@ import { VehicleSize } from "@/models/VehicleSize";
 import mongoose from "mongoose";
 
 const CarSchema = new mongoose.Schema({
-    spotsNeeded: 1,
-    size: VehicleSize.Compact,
+    spotsNeeded: {
+        type: Number,
+        default: 1
+    },
+    size: {
+        type: String,
+        enum: Object.values(VehicleSize),
+        default: VehicleSize.Compact
+    },
 }, {discriminatorKey: "kind"})
 
 CarSchema.methods.canFitInSpots = function (spot: ParkingSpot): boolean {
-    return spot.getSize() == this.size
+    return spot.spotSize == this.size
 }
 
 export const Car = VehicleModel.discriminator("Car", CarSchema)
