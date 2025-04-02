@@ -48,7 +48,9 @@ parkingSpotSchema.methods.isAvailable = function(): boolean {
     return this.vehicleObject == null;
 }
 
-parkingSpotSchema.methods.canFitVehicle = function(vehicle: TVehicle): boolean {
+parkingSpotSchema.methods.canFitVehicle = function(
+    this: TParkingSpot, vehicle: TVehicle
+): boolean {
     return this.isAvailable() && vehicle.canFitInSpots(this);
 }
 
