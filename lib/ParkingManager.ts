@@ -80,4 +80,16 @@ export default class ParkingManager {
         console.log("New vehicle created from API")
         return [201, vehicle, "Vehicle created"]
     }
+
+    async removeVehicle(licensePlate: string): Promise<[status: number, message: string]> {
+        await DB.getConnection();
+
+        const find = await Vehicle.findOne({ licensePlate }).lean();
+        if (!find) {
+            console.error("Vehicle not found");
+            return [404, `Vehicle not found`];
+        }
+        await Vehicle.deleteOne({ licensePlate }).lean();
+        return [200, "Vehicle deleted successfully"]
+    }
 }

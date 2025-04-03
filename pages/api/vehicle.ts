@@ -1,9 +1,7 @@
-import DatabaseManager from "@/lib/DatabaseManager";
 import { NextApiRequest, NextApiResponse } from 'next';
 import Vehicle from "@/models/Vehicle"
 import ParkingManager from "@/lib/ParkingManager";
 
-const DB = DatabaseManager.getInstance();
 const parkingManager = ParkingManager.getInstance();
 
 const createVehicle = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -34,15 +32,8 @@ const removeVehicles = async (req: NextApiRequest, res: NextApiResponse) => {
     const { licensePlate } = req.body;
 
     try {
-        await DB.getConnection();
-
-        const find = await Vehicle.findOne({ licensePlate }).lean();
-        if (!find) {
-            console.error("Vehicle not found");
-            res.status(404).json({message: "Vehicle not found"});
-        }
-        await Vehicle.deleteOne({ licensePlate }).lean();
-        res.status(200).json({message: "Vehicle deleted successfully"})
+        const [status, message] = await parkingManager.removeVehicle(licensePlate);
+        res.status(status).json({message: message})
 
     } catch (error) {
         console.error("Error deleting vehicle:", error);
