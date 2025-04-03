@@ -53,6 +53,7 @@ parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
         if (await this.levels[i].parkVehicle(vehicle)) {
 
             await DB.getConnection()
+            // In case there's a usage of this method without using ParkingManager
             await this.save()
             await vehicle.save()
             return true;
