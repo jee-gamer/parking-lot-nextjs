@@ -38,7 +38,7 @@ parkingLotSchema.pre("save", async function (next) {
     } else {
         this.levels = await Promise.all(
             Array.from({length: this.NUM_LEVELS}, (_, i) =>
-                Level.create(i, totalSpots, spotsPerRow)
+                Level.create(i, totalSpots, spotsPerRow) // Use create function because constructor cannot be async
             )
         );
     }
