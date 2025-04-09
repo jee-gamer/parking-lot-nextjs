@@ -1,10 +1,10 @@
-import ParkingLot, {TParkingLot} from "@/models/ParkingLot";
+import ParkingLot, {ParkingLotDoc} from "@/models/ParkingLot";
 import Vehicle, {TVehicle} from "@/models/Vehicle";
 import DatabaseManager from "@/lib/DatabaseManager";
 import {VehicleClassMap} from "@/models/VehicleClassMap";
 import {VehicleType} from "@/models/VehicleType";
 
-const DB = await DatabaseManager.getInstance();
+const DB = DatabaseManager.getInstance();
 
 export default class ParkingManager {
     private static _instance: ParkingManager;
@@ -22,10 +22,7 @@ export default class ParkingManager {
     async park(licensePlate: string): Promise<[status: number, message: string]> {
         await DB.getConnection()
 
-        let parkingLot: TParkingLot = (await ParkingLot.findOne({}))!;
-        if (!parkingLot) {
-            parkingLot = await ParkingLot.create({})
-        }
+        let parkingLot: ParkingLotDoc = (await ParkingLot.getOrCreate())!;
 
         let vehicle: TVehicle = (await Vehicle.findOne({licensePlate}).populate('parkingSpots'))!;
 

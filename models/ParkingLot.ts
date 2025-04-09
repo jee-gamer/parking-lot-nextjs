@@ -1,4 +1,4 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, {Document, Model} from "mongoose";
 import levelSchema from "@/models/Level";
 import Level from "@/lib/Level"
 import {TVehicle} from "@/models/Vehicle";
@@ -19,7 +19,13 @@ interface IParkingLotMethods {
     parkVehicle(vehicle: TVehicle): Promise<boolean>
 }
 
-const parkingLotSchema = new mongoose.Schema<IParkingLot>({
+export type ParkingLotDoc = Document & IParkingLot & IParkingLotMethods
+
+interface IParkingLotModel extends Model<ParkingLotDoc> {
+    getOrCreate(): Promise<ParkingLotDoc>;
+}
+
+const parkingLotSchema = new mongoose.Schema<ParkingLotDoc, IParkingLotModel>({
     levels: [levelSchema],
     NUM_LEVELS: {
         type: Number,
@@ -27,23 +33,23 @@ const parkingLotSchema = new mongoose.Schema<IParkingLot>({
     }
 })
 
-parkingLotSchema.pre("save", async function (next) {
+parkingLotSchema.statics.getOrCreate = async function () {
     const ParkingLot = mongoose.model("ParkingLot");
     const exist = await ParkingLot.findOne({})
-    if (this.isNew && exist) {
-        // Instead of saving a new one, replace 'this' with the existing instance
-        this._id = exist._id;
-        this.isNew = false; // Prevents insert operation, forces update instead
-
-    } else {
-        this.levels = await Promise.all(
-            Array.from({length: this.NUM_LEVELS}, (_, i) =>
-                Level.create(i, totalSpots, spotsPerRow) // Use create function because constructor cannot be async
-            )
-        );
+    if (exist) {
+        return exist;
     }
-    next();
-});
+
+    const parkingLot = new this();
+    // @ts-ignore
+    parkingLot.levels = await Promise.all(
+        Array.from({length: parkingLot.NUM_LEVELS}, (_, i) =>
+            Level.create(i, totalSpots, spotsPerRow) // Use create function because constructor cannot be async
+        )
+    );
+    await parkingLot.save();
+    return parkingLot;
+}
 
 parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
     for (let i=0; i< this.levels.length; i++) {
@@ -62,5 +68,4 @@ parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
     return false;
 }
 
-export type TParkingLot = IParkingLot & IParkingLotMethods;
-export default mongoose.models.ParkingLot || mongoose.model("ParkingLot", parkingLotSchema);
+export default mongoose.models.ParkingLot as IParkingLotModel || mongoose.model<ParkingLotDoc, IParkingLotModel>("ParkingLot", parkingLotSchema);
