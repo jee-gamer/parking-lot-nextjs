@@ -13,7 +13,7 @@ interface IParkingSpot extends Document {
 }
 
 interface IParkingSpotMethods {
-    removeVehicle(): void,
+    removeVehicle(): Promise<void>,
     isAvailable(): boolean,
     canFitVehicle(vehicle: TVehicle): boolean,
     park(vehicle: TVehicle): boolean,
@@ -40,8 +40,9 @@ const parkingSpotSchema = new mongoose.Schema<IParkingSpot>({
     },
 });
 
-parkingSpotSchema.methods.removeVehicle = function() {
+parkingSpotSchema.methods.removeVehicle = async function() {
     this.vehicle = null;
+    await this.save()
 }
 
 parkingSpotSchema.methods.isAvailable = function(): boolean {
@@ -64,6 +65,7 @@ parkingSpotSchema.methods.park = async function(vehicle: TVehicle): Promise<bool
 
     this.vehicle = vehicle;
     this.vehicle.parkInSpot(this);
+    await this.save() // Save here because it does not automatically save when I save parkingLot
 
     return true;
 }

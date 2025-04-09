@@ -8,7 +8,7 @@ const DB = DatabaseManager.getInstance();
 
 const totalSpots = 40;
 const spotsPerRow = 20;
-const NUM_LEVELS = 5;
+const NUM_LEVELS = 1;
 
 interface IParkingLot extends Document {
     levels: Level[];
@@ -43,7 +43,7 @@ parkingLotSchema.statics.getOrCreate = async function () {
     const parkingLot = new this();
     // @ts-ignore
     parkingLot.levels = await Promise.all(
-        Array.from({length: parkingLot.NUM_LEVELS}, (_, i) =>
+        Array.from({length: NUM_LEVELS}, (_, i) =>
             Level.create(i, totalSpots, spotsPerRow) // Use create function because constructor cannot be async
         )
     );
@@ -59,9 +59,6 @@ parkingLotSchema.methods.parkVehicle = async function (vehicle: TVehicle) {
         if (await this.levels[i].parkVehicle(vehicle)) {
 
             await DB.getConnection()
-            // In case there's a usage of this method without using ParkingManager
-            await this.save()
-            await vehicle.save()
             return true;
         }
     }

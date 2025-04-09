@@ -3,6 +3,8 @@ import Vehicle, {TVehicle} from "@/models/Vehicle";
 import DatabaseManager from "@/lib/DatabaseManager";
 import {VehicleClassMap} from "@/models/VehicleClassMap";
 import {VehicleType} from "@/models/VehicleType";
+import ParkingSpot from "@/models/ParkingSpot";
+import parkingSpot from "@/models/ParkingSpot";
 
 const DB = DatabaseManager.getInstance();
 
@@ -35,7 +37,6 @@ export default class ParkingManager {
         }
 
         await parkingLot.parkVehicle(vehicle);
-        await parkingLot.save();
         await vehicle.save();
 
         return [200, `Successfully parked vehicle with licensePlate '${licensePlate}'`]
@@ -88,5 +89,16 @@ export default class ParkingManager {
         }
         await Vehicle.deleteOne({ licensePlate }).lean();
         return [200, "Vehicle deleted successfully"]
+    }
+
+    async getAllParkingSpots(): Promise<[status: number, message: string, data: any]> {
+        await DB.getConnection()
+
+        const parkingSpots = await ParkingSpot.find().populate('vehicle');
+        console.log(parkingSpots);
+        if (!parkingSpots || parkingSpots.length === 0) {
+            return [404, `ParkingSpots does not exist yet`, []];
+        }
+        return [200, `Successfully fetched ParkingSpots`, parkingSpots];
     }
 }

@@ -1,66 +1,56 @@
-import { useState, useEffect } from 'react';
+import Image from "next/image";
+import React, {useEffect, useState} from "react";
 
 export default function Home() {
-    const [items, setItems] = useState([]);
-    const [form, setForm] = useState({ name: '', description: '' });
+	const [parkingSpots, setParkingSpots] = useState([]);
 
-    useEffect(() => {
-        fetchItems();
-    }, []);
+	useEffect(() => {
+		const fetchParkingSpots = async () => {
+			try {
+				const response = await fetch("/api/parkingSpots"); // Call the API route
+				console.log("response", response);
+				if (!response.ok) {
+					return
+				}
+				const { data } = await response.json();
+				console.log("parkingSpots: ", data);
+				setParkingSpots(data); // Set the fetched parking spots into state
 
-    const fetchItems = async () => {
-        const res = await fetch('/api/items');
-        const data = await res.json();
-        setItems(data.data);
-    };
+			} catch (error) {
+				console.error("Error fetching parking spots:", error);
+			}
+		};
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+		fetchParkingSpots(); // Call the function to fetch parking spots
+	}, []); // Empty dependency array ensures this only runs once when the component mounts
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await fetch('/api/items', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(form),
-            });
-            fetchItems();
-            setForm({ name: '', description: '' });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    return (
-        <div>
-            <h1>Items</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    name="name"
-                    placeholder="Item name"
-                    value={form.name}
-                    onChange={handleChange}
-                />
-                <input
-                    name="description"
-                    placeholder="Item description"
-                    value={form.description}
-                    onChange={handleChange}
-                />
-                <button type="submit">Add Item</button>
-            </form>
-
-            <ul>
-                {items.map((item) => (
-                    <li key={item._id}>
-                        {item.name} - {item.description}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+	return (
+		<div id="main">
+			<h1>Parking Lot</h1>
+			<table>
+				<thead>
+				<tr>
+					<th>ParkingSpot ID</th>
+					<th>SpotSize</th>
+					<th>Row</th>
+					<th>SpotNumber</th>
+					<th>LicensePlate</th>
+					<th>Type</th>
+				</tr>
+				</thead>
+				<tbody>
+				{parkingSpots.map((row) => (
+					<tr key={row._id}>
+						<td>{row._id}</td>
+						<td>{row.spotSize}</td>
+						<td>{row.row}</td>
+						<td>{row.spotNumber}</td>
+						<td>{row.vehicle?.licensePlate || "None"}</td>
+						<td>{row.vehicle?.__t || "None"}</td>
+					</tr>
+				))}
+				</tbody>
+			</table>
+		</div>
+	);
 }

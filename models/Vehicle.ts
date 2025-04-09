@@ -45,7 +45,7 @@ vehicleSchema.methods.parkInSpot = async function (parkingSpot: TParkingSpot) {
 
 vehicleSchema.methods.clearSpots = async function () {
     for (let i = 0; i < this.parkingSpots.length; i++) {
-        this.parkingSpots[i].removeVehicle();
+        await this.parkingSpots[i].removeVehicle();
     }
     this.parkingSpots = [];
     return true

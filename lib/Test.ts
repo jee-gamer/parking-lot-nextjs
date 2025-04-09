@@ -17,5 +17,4 @@ const motorcycleStatus = await PM.park(motorcycle.licensePlate)
 console.log(busStatus)
 console.log(motorcycleStatus)
 
-console.log( await bus.clearSpots() )
-console.log( await motorcycle.clearSpots() )
+console.log( await PM.unpark(motorcycle.licensePlate) )

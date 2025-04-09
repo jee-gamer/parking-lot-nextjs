@@ -19,4 +19,4 @@ CarSchema.methods.canFitInSpots = function (spot: ParkingSpot): boolean {
     return spot.spotSize == this.size
 }
 
-export const Car = VehicleModel.discriminator<TVehicle>("Car", CarSchema)
+export const Car = mongoose.models.Car || VehicleModel.discriminator<TVehicle>("Car", CarSchema)

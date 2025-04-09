@@ -19,4 +19,4 @@ BusSchema.methods.canFitInSpots = function (spot: ParkingSpot): boolean {
     return spot.spotSize == this.size
 }
 
-export const Bus = VehicleModel.discriminator<TVehicle>("Bus", BusSchema)
+export const Bus = mongoose.models.Bus || VehicleModel.discriminator<TVehicle>("Bus", BusSchema)

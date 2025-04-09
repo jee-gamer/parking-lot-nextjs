@@ -19,4 +19,4 @@ MotorcycleSchema.methods.canFitInSpots = function (_spot: ParkingSpot): boolean 
     return true
 }
 
-export const Motorcycle = VehicleModel.discriminator<TVehicle>("Motorcycle", MotorcycleSchema)
+export const Motorcycle = mongoose.models.Motorcycle || VehicleModel.discriminator<TVehicle>("Motorcycle", MotorcycleSchema)
