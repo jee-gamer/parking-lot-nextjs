@@ -97,8 +97,15 @@ export default class ParkingManager {
     async getAllParkingSpots(): Promise<[status: number, message: string, data: any]> {
         await DB.getConnection()
 
+        const parkingLot = await ParkingLot.findOne();
+
+        if (!parkingLot) {
+            console.log(`ParkingLot not found`);
+            await ParkingLot.getOrCreate();
+        }
+
         const parkingSpots = await ParkingSpot.find().populate('vehicle');
-        console.log(parkingSpots);
+
         if (!parkingSpots || parkingSpots.length === 0) {
             return [404, `ParkingSpots does not exist yet`, []];
         }

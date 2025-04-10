@@ -34,19 +34,19 @@ const parkingLotSchema = new mongoose.Schema<ParkingLotDoc, IParkingLotModel>({
 })
 
 parkingLotSchema.statics.getOrCreate = async function () {
-    const ParkingLot = mongoose.model("ParkingLot");
+    const ParkingLot = mongoose.models.ParkingLot
     const exist = await ParkingLot.findOne({})
     if (exist) {
         return exist;
     }
 
     const parkingLot = new this();
-    // @ts-ignore
     parkingLot.levels = await Promise.all(
         Array.from({length: NUM_LEVELS}, (_, i) =>
             Level.create(i, totalSpots, spotsPerRow) // Use create function because constructor cannot be async
         )
     );
+    console.log("Created new parkingLot");
     await parkingLot.save();
     return parkingLot;
 }
