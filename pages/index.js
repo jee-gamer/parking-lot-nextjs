@@ -1,4 +1,3 @@
-import Image from "next/image";
 import "./globals.css";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
@@ -59,9 +58,10 @@ export default function Home() {
 
 	const handleCreateVehicle = async () => {
 		const body = {
-			licensePlate: licensePlate,
+			licensePlate: createLicensePlate,
 			vehicleType: vehicleType,
 		}
+		console.log(`Creating ${createLicensePlate} with Type ${vehicleType}`);
 		await axios.post("/api/vehicle", body)
 			.then( function (response) {
 					const {message} = response.data;

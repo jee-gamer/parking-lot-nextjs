@@ -4,7 +4,6 @@ import DatabaseManager from "@/lib/DatabaseManager";
 import {VehicleClassMap} from "@/models/VehicleClassMap";
 import {VehicleType} from "@/models/VehicleType";
 import ParkingSpot from "@/models/ParkingSpot";
-import parkingSpot from "@/models/ParkingSpot";
 
 const DB = DatabaseManager.getInstance();
 
@@ -60,9 +59,13 @@ export default class ParkingManager {
     }
 
     async createVehicle(licensePlate: string, vehicleType: VehicleType):
-        Promise<[status: number, vehicleData: TVehicle, message: string]>
+        Promise<[status: number, vehicleData: TVehicle | any, message: string]>
     {
         await DB.getConnection();
+
+        if (licensePlate == '') {
+            return [400, [], "The licensePlate is empty!"]
+        }
 
         const vehicleData: TVehicle = (await Vehicle.findOne({ licensePlate }))!;
         if (vehicleData) {
